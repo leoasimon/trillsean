@@ -1,26 +1,32 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
 import { RootState } from "../../app/store";
-
-export interface Player {
-  name: string;
-}
-
-export interface Team {
-  name: string;
-  players: Player[];
-}
+import { Team, TeamForm } from "./types";
 
 const initialState: Team = {
   name: "Team name",
-  players: [{ name: "Player 1" }, { name: "Player 2" }],
+  players: [
+    {
+      name: "Player 1",
+      avatar: "https://avatars.dicebear.com/api/avataaars/Player 1.svg",
+    },
+    {
+      name: "Player 2",
+      avatar: "https://avatars.dicebear.com/api/avataaars/Player 2.svg",
+    },
+  ],
+  draft: true,
 };
 
 export const teamSlice = createSlice({
   name: "team",
   initialState,
   reducers: {
-    create: (state, action: PayloadAction<Team>) => {
-      state = action.payload;
+    create: (state, action: PayloadAction<TeamForm>) => {
+      console.log({ action });
+      state.draft = false;
+      state.name = action.payload.name;
+      state.players = action.payload.players;
     },
   },
 });
