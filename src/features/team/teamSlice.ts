@@ -15,7 +15,7 @@ const initialState: Team = {
       avatar: "https://avatars.dicebear.com/api/avataaars/Player 2.svg",
     },
   ],
-  draft: true,
+  draft: false,
 };
 
 export const teamSlice = createSlice({
@@ -23,7 +23,6 @@ export const teamSlice = createSlice({
   initialState,
   reducers: {
     create: (state, action: PayloadAction<TeamForm>) => {
-      console.log({ action });
       state.draft = false;
       state.name = action.payload.name;
       state.players = action.payload.players;

@@ -13,3 +13,8 @@ export interface TeamForm {
   name: string;
   players: Player[];
 }
+
+export interface Contestant {
+  playerOne: Player | null;
+  playerTwo: Player | null;
+}

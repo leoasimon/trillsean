@@ -5,10 +5,13 @@ import { useForm } from "antd/lib/form/Form";
 
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { selectTeam, create } from "../../teamSlice";
-import { Player } from "../../types";
+import { Player, Team } from "../../types";
 
-const TeamCreator: React.FC = () => {
-  const team = useAppSelector(selectTeam);
+interface TeamCreatorProps {
+  team: Team;
+}
+
+const TeamCreator: React.FC<TeamCreatorProps> = ({ team }) => {
   const dispatch = useAppDispatch();
 
   const onFinish = (values: any) => {
@@ -140,19 +143,17 @@ const TeamCreator: React.FC = () => {
         </Form.Item>
 
         <Form.Item shouldUpdate>
-          {() => {
-            return (
-              <Button
-                type="primary"
-                htmlType="submit"
-                disabled={form
-                  .getFieldsError()
-                  .some(({ errors }) => errors.length)}
-              >
-                Play
-              </Button>
-            );
-          }}
+          {() => (
+            <Button
+              type="primary"
+              htmlType="submit"
+              disabled={form
+                .getFieldsError()
+                .some(({ errors }) => errors.length)}
+            >
+              Play
+            </Button>
+          )}
         </Form.Item>
       </Form>
     </Space>
