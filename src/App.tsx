@@ -1,17 +1,15 @@
 import React from "react";
 
-import "./App.css";
-import { useAppSelector } from "./app/hooks";
-import TeamCreator from "./features/team/components/teamCreator";
-import { selectTeam } from "./features/team/teamSlice";
-import GamePage from "./pages/game";
+import "./App.less";
+import AppRouter from "./AppRouter";
+import AppLayout from "./components/appLayout";
 
 function App() {
-  const team = useAppSelector(selectTeam);
-
   return (
     <div className="App">
-      {team.draft ? <TeamCreator team={team} /> : <GamePage team={team} />}
+      <AppLayout>
+        <AppRouter />
+      </AppLayout>
     </div>
   );
 }

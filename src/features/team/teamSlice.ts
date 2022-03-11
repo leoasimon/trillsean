@@ -15,7 +15,7 @@ const initialState: Team = {
       avatar: "https://avatars.dicebear.com/api/avataaars/Player 2.svg",
     },
   ],
-  draft: false,
+  draft: true,
 };
 
 export const teamSlice = createSlice({

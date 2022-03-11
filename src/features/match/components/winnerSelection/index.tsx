@@ -1,31 +1,26 @@
 import React, { useState } from "react";
-import { Card, Modal, Space, Typography } from "antd";
+import { Card, Modal, Space } from "antd";
 
 import { Contestant, Player } from "../../../team/types";
-import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
-import { add, selectMatches } from "../../matchSlice";
 
 const { Meta } = Card;
 
 interface WinnerSelectionProps {
   contestant: Contestant;
+  handleWinnerSelection: (winner: Player, contestants: Contestant) => void;
 }
 
-const WinnerSelection: React.FC<WinnerSelectionProps> = ({ contestant }) => {
-  const matches = useAppSelector(selectMatches);
+const WinnerSelection: React.FC<WinnerSelectionProps> = ({
+  contestant,
+  handleWinnerSelection,
+}) => {
   const [winner, setWinner] = useState<Player>();
-  const dispatch = useAppDispatch();
 
   const [playerOne, playerTwo] = contestant;
 
   const handleOk = () => {
     if (winner) {
-      dispatch(
-        add({
-          contestant: [playerOne.name, playerTwo.name],
-          winner: winner.name,
-        })
-      );
+      handleWinnerSelection(winner, contestant);
       setWinner(undefined);
     }
   };
@@ -34,11 +29,9 @@ const WinnerSelection: React.FC<WinnerSelectionProps> = ({ contestant }) => {
     setWinner(undefined);
   };
 
-  console.log({ matches });
   return (
     <>
       <Space direction="vertical">
-        <Typography.Title level={4}>Select a winner</Typography.Title>
         <Card
           hoverable
           cover={<img src={playerOne.avatar} alt={playerOne.name} />}

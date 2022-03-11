@@ -1,7 +1,7 @@
-import { Avatar, Button, Form, Select, Space, Typography } from "antd";
+import React, { useState } from "react";
+import { Avatar, Button, Form, Select, Space } from "antd";
 import { useForm } from "antd/lib/form/Form";
 
-import React, { useState } from "react";
 import { ContestantNames, Team } from "../../types";
 
 interface ContestantSelectorProps {
@@ -49,7 +49,6 @@ const ContestantSelector: React.FC<ContestantSelectorProps> = ({
 
   return (
     <Space direction="vertical">
-      <Typography.Title level={3}>{team.name}</Typography.Title>
       <Form
         name="contestantSelection"
         layout="vertical"

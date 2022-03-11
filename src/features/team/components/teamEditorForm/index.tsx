@@ -1,21 +1,26 @@
 import React from "react";
-import { Avatar, Button, Form, Input, List, Space, Typography } from "antd";
+import { Avatar, Button, Form, Input, List, Space } from "antd";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import { useForm } from "antd/lib/form/Form";
 
-import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
-import { selectTeam, create } from "../../teamSlice";
+import { useAppDispatch } from "../../../../app/hooks";
+import { create } from "../../teamSlice";
 import { Player, Team } from "../../types";
+import { initiate } from "../../../score/scoreSlice";
+import { useNavigate } from "react-router-dom";
 
-interface TeamCreatorProps {
+interface TeamEditorFormProps {
   team: Team;
 }
 
-const TeamCreator: React.FC<TeamCreatorProps> = ({ team }) => {
+const TeamEditorForm: React.FC<TeamEditorFormProps> = ({ team }) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-  const onFinish = (values: any) => {
-    dispatch(create(values));
+  const onFinish = (team: Team) => {
+    dispatch(create(team));
+    dispatch(initiate(team.players));
+    navigate("/game");
   };
 
   // TODO v2: add an error message toggle or something
@@ -27,7 +32,6 @@ const TeamCreator: React.FC<TeamCreatorProps> = ({ team }) => {
 
   return (
     <Space direction="vertical">
-      <Typography.Title level={3}>Create your Team</Typography.Title>
       <Form
         name="team"
         form={form}
@@ -151,7 +155,7 @@ const TeamCreator: React.FC<TeamCreatorProps> = ({ team }) => {
                 .getFieldsError()
                 .some(({ errors }) => errors.length)}
             >
-              Play
+              Save
             </Button>
           )}
         </Form.Item>
@@ -160,4 +164,4 @@ const TeamCreator: React.FC<TeamCreatorProps> = ({ team }) => {
   );
 };
 
-export default TeamCreator;
+export default TeamEditorForm;
