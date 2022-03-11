@@ -1,23 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ContestantSelector from "../../features/team/components/contestantSelector";
+import WinnerSelection from "../../features/match/components/winnerSelection";
 
-import { Contestant, Team } from "../../features/team/types";
+import { Contestant, ContestantNames, Team } from "../../features/team/types";
 
 interface GamePageProps {
   team: Team;
 }
 
 const GamePage: React.FC<GamePageProps> = ({ team }) => {
-  const [contestant, setContestant] = useState<Contestant>({
-    playerOne: null,
-    playerTwo: null,
-  });
+  const [contestantNames, setContestantNames] = useState<ContestantNames>();
 
-  console.log({ contestant });
-  return contestant.playerOne === null ? (
-    <ContestantSelector team={team} setContestant={setContestant} />
+  const [contestant, setContestant] = useState<Contestant>();
+
+  const [playerOneName, playerTwoName] = contestantNames || [];
+
+  useEffect(() => {
+    if (contestantNames !== undefined) {
+      const playerOne = team.players.find(
+        (player) => player.name === playerOneName
+      );
+      const playerTwo = team.players.find(
+        (player) => player.name === playerTwoName
+      );
+
+      if (playerOne && playerTwo) {
+        setContestant([playerOne, playerTwo]);
+      }
+    }
+  }, [contestantNames]);
+
+  return !contestant ? (
+    <ContestantSelector team={team} setContestantNames={setContestantNames} />
   ) : (
-    <div>Let's play</div>
+    <WinnerSelection contestant={contestant} />
   );
 };
 

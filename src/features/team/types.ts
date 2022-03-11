@@ -14,7 +14,6 @@ export interface TeamForm {
   players: Player[];
 }
 
-export interface Contestant {
-  playerOne: Player | null;
-  playerTwo: Player | null;
-}
+export type Contestant = [Player, Player];
+
+export type ContestantNames = [string, string];

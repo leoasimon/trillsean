@@ -2,27 +2,30 @@ import { Avatar, Button, Form, Select, Space, Typography } from "antd";
 import { useForm } from "antd/lib/form/Form";
 
 import React, { useState } from "react";
-import { Contestant, Team } from "../../types";
+import { ContestantNames, Team } from "../../types";
 
 interface ContestantSelectorProps {
   team: Team;
-  setContestant: (contestant: Contestant) => void;
+  setContestantNames: (contestantNames: ContestantNames) => void;
 }
 
 const { Option } = Select;
 
 const ContestantSelector: React.FC<ContestantSelectorProps> = ({
   team,
-  setContestant,
+  setContestantNames,
 }) => {
   const [form] = useForm();
   const [playerOneOptions, setPlayerOneOptions] = useState(team.players);
   const [playerTwoOptions, setPlayerTwoOptions] = useState(team.players);
 
-  const onFinish = (values: Contestant) => {
-    setContestant(values);
+  const onFinish = (contestantForm: {
+    playerOne: string;
+    playerTwo: string;
+  }) => {
+    const { playerOne, playerTwo } = contestantForm;
+    setContestantNames([playerOne, playerTwo]);
   };
-
   const onValuesChange = (changedValues: any) => {
     if ("playerOne" in changedValues) {
       setPlayerTwoOptions(
