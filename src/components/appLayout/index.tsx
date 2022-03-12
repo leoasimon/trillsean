@@ -25,6 +25,9 @@ const AppLayout: React.FC = ({ children }) => {
               <Menu.Item key="game">
                 <Link to="/game">Play</Link>
               </Menu.Item>
+              <Menu.Item key="scoreBoard">
+                <Link to="/score-board">Score board</Link>
+              </Menu.Item>
             </Menu>
           )}
         </Space>

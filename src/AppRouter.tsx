@@ -4,6 +4,7 @@ import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useAppSelector } from "./app/hooks";
 import { selectTeam } from "./features/team/teamSlice";
 import GamePage from "./pages/game";
+import ScoreBoardPage from "./pages/scoreBoard";
 import TeamEditorPage from "./pages/teamEditor";
 
 const RequireAuth: React.FC = ({ children }) => {
@@ -31,6 +32,15 @@ const AppRouter: React.FC = () => {
         element={
           <RequireAuth>
             <GamePage />
+          </RequireAuth>
+        }
+      />
+
+      <Route
+        path="score-board"
+        element={
+          <RequireAuth>
+            <ScoreBoardPage />
           </RequireAuth>
         }
       />
