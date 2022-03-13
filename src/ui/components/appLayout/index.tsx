@@ -2,8 +2,8 @@ import React from "react";
 import { Menu, Space } from "antd";
 
 import "./appLayout.less";
-import { useAppSelector } from "../../app/hooks";
-import { selectTeam } from "../../features/team/teamSlice";
+import { useAppSelector } from "../../../app/hooks";
+import { selectTeam } from "../../../features/team/teamSlice";
 import { Link } from "react-router-dom";
 
 const AppLayout: React.FC = ({ children }) => {

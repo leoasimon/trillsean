@@ -23,7 +23,7 @@ const TeamEditorForm: React.FC<TeamEditorFormProps> = ({ team }) => {
     navigate("/game");
   };
 
-  // TODO v2: add an error message toggle or something
+  // TODO v2: add an error message or something
   const onFinishFailed = (errorInfo: any) => {
     console.log({ errorInfo });
   };

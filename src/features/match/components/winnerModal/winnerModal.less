@@ -1,0 +1,76 @@
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideLeft {
+  0% {
+    margin-left: -30px;
+  }
+  100% {
+    margin-left: 0;
+  }
+}
+
+@keyframes slideTop {
+  0% {
+    margin-top: -30px;
+  }
+  100% {
+    margin-top: 0;
+  }
+}
+
+@keyframes slideRight {
+  0% {
+    margin-right: -30px;
+  }
+  100% {
+    margin-right: 0;
+  }
+}
+
+.winner-title {
+  opacity: 0;
+  animation: fadeIn 2s;
+  animation-fill-mode: forwards;
+}
+
+.award-illustration {
+  opacity: 0;
+  animation: fadeIn 2s, slideTop 2s;
+  animation-fill-mode: forwards;
+}
+
+.victories-counter {
+  opacity: 0;
+  animation: fadeIn 2s, slideLeft 2s;
+  animation-fill-mode: forwards;
+  animation-delay: 1s;
+}
+
+.score-counter {
+  opacity: 0;
+  animation: fadeIn 2s, slideRight 2s;
+  animation-fill-mode: forwards;
+  animation-delay: 2s;
+}
+
+.winner-footer {
+  opacity: 0;
+  animation: fadeIn 2s;
+  animation-fill-mode: forwards;
+  animation-delay: 3s;
+}
+
+.aligned-title {
+  margin-bottom: 0 !important;
+}
+
+.counter-text {
+  font-size: large;
+}

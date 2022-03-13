@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import ContestantSelector from "../../features/team/components/contestantSelector";
-import WinnerSelection from "../../features/match/components/winnerSelection";
-
-import { Contestant, ContestantNames, Player } from "../../features/team/types";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectTeam } from "../../features/team/teamSlice";
 import { PageHeader } from "antd";
-import { MatchResult } from "../../features/match/types";
+import React, { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import WinnerModal from "../../features/match/components/winnerModal";
+import WinnerSelection from "../../features/match/components/winnerSelection";
 import { add } from "../../features/match/matchSlice";
+import { MatchResult } from "../../features/match/types";
 import { updateScores } from "../../features/score/scoreSlice";
+import ContestantSelector from "../../features/team/components/contestantSelector";
+import { selectTeam } from "../../features/team/teamSlice";
+import { Contestant, ContestantNames, Player } from "../../features/team/types";
 
 const GamePage: React.FC = () => {
   const team = useAppSelector(selectTeam);
@@ -16,6 +16,7 @@ const GamePage: React.FC = () => {
 
   const [contestantNames, setContestantNames] = useState<ContestantNames>();
   const [contestant, setContestant] = useState<Contestant>();
+  const [confirmedWinner, setConfirmedWinner] = useState<Player>();
 
   const [playerOneName, playerTwoName] = contestantNames || [];
 
@@ -43,13 +44,15 @@ const GamePage: React.FC = () => {
     dispatch(add(matchResult));
     dispatch(updateScores(matchResult));
     setContestant(undefined);
+    setConfirmedWinner(winner);
   };
 
   return (
-    <PageHeader
-      title={team.name}
-      subTitle={contestant ? "Select a winner" : ""}
-    >
+    <>
+      <PageHeader
+        title={team.name}
+        subTitle={contestant ? "Select a winner" : ""}
+      />
       {!contestant ? (
         <ContestantSelector
           team={team}
@@ -61,7 +64,11 @@ const GamePage: React.FC = () => {
           handleWinnerSelection={handleWinnerSelection}
         />
       )}
-    </PageHeader>
+      <WinnerModal
+        confirmedWinner={confirmedWinner}
+        quit={() => setConfirmedWinner(undefined)}
+      />
+    </>
   );
 };
 

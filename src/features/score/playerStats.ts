@@ -7,7 +7,7 @@ interface PlayerStats {
   };
 }
 
-// TODO: handle pat games?
+// TODO v2: handle pat games?
 export const getPlayerStats = (matches: Match[]): PlayerStats => {
   const playerStats: PlayerStats = {};
   matches.forEach((match) => {

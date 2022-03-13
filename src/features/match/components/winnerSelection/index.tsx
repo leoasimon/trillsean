@@ -1,6 +1,5 @@
-import React, { useState } from "react";
 import { Card, Modal, Space } from "antd";
-
+import React, { useState } from "react";
 import { Contestant, Player } from "../../../team/types";
 
 const { Meta } = Card;
