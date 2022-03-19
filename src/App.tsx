@@ -1,5 +1,4 @@
 import React from "react";
-
 import "./App.less";
 import AppRouter from "./AppRouter";
 import AppLayout from "./ui/components/appLayout";

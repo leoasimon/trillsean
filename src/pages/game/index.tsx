@@ -3,20 +3,29 @@ import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import WinnerModal from "../../features/match/components/winnerModal";
 import WinnerSelection from "../../features/match/components/winnerSelection";
-import { add } from "../../features/match/matchSlice";
-import { MatchResult } from "../../features/match/types";
-import { updateScores } from "../../features/score/scoreSlice";
+import { add, selectMatches } from "../../features/match/matchSlice";
+import { Match, MatchResult } from "../../features/match/types";
+import { selectScores, updateScores } from "../../features/score/scoreSlice";
 import ContestantSelector from "../../features/team/components/contestantSelector";
 import { selectTeam } from "../../features/team/teamSlice";
 import { Contestant, ContestantNames, Player } from "../../features/team/types";
 
+const getVictories = (matches: Match[], playerName: string) => {
+  return matches.reduce((acc, match) => {
+    return match.winner === playerName ? acc + 1 : acc;
+  }, 0);
+};
+
 const GamePage: React.FC = () => {
   const team = useAppSelector(selectTeam);
+  const scores = useAppSelector(selectScores);
+  const matches = useAppSelector(selectMatches);
   const dispatch = useAppDispatch();
 
   const [contestantNames, setContestantNames] = useState<ContestantNames>();
   const [contestant, setContestant] = useState<Contestant>();
   const [confirmedWinner, setConfirmedWinner] = useState<Player>();
+  const [previousScores, setPreviousScores] = useState(scores);
 
   const [playerOneName, playerTwoName] = contestantNames || [];
 
@@ -41,6 +50,7 @@ const GamePage: React.FC = () => {
       contestant: [playerOne.name, playerTwo.name],
       winner: winner.name,
     };
+    setPreviousScores(scores);
     dispatch(add(matchResult));
     dispatch(updateScores(matchResult));
     setContestant(undefined);
@@ -64,10 +74,19 @@ const GamePage: React.FC = () => {
           handleWinnerSelection={handleWinnerSelection}
         />
       )}
-      <WinnerModal
-        confirmedWinner={confirmedWinner}
-        quit={() => setConfirmedWinner(undefined)}
-      />
+      {confirmedWinner !== undefined && (
+        <WinnerModal
+          confirmedWinner={confirmedWinner}
+          quit={() => setConfirmedWinner(undefined)}
+          previousScore={
+            confirmedWinner ? previousScores[confirmedWinner.name] : 0
+          }
+          score={confirmedWinner ? scores[confirmedWinner.name] || 0 : 0}
+          victories={
+            confirmedWinner ? getVictories(matches, confirmedWinner.name) : 0
+          }
+        />
+      )}
     </>
   );
 };

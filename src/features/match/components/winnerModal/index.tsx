@@ -1,18 +1,28 @@
-import { ArrowRightOutlined } from "@ant-design/icons";
-import { Button, Col, Modal, Row, Space, Typography } from "antd";
+import { Button, Modal, Space, Typography } from "antd";
 import { ReactComponent as Awards } from "assets/awards.svg";
 import { Player } from "features/team/types";
 import React from "react";
-import CountUp from "react-countup";
 import { Link } from "react-router-dom";
+import AnimatedCounter from "ui/components/animatedCounter";
 import "./winnerModal.less";
 
 interface WinnerModalProps {
   confirmedWinner?: Player;
   quit: () => void;
+  previousScore: number;
+  score: number;
+  victories: number;
 }
 
-const WinnerModal: React.FC<WinnerModalProps> = ({ confirmedWinner, quit }) => {
+const CounterItem = <Typography.Title level={3} className="aligned-title" />;
+
+const WinnerModal: React.FC<WinnerModalProps> = ({
+  confirmedWinner,
+  quit,
+  previousScore,
+  score,
+  victories,
+}) => {
   return (
     <Modal
       centered={true}
@@ -35,7 +45,13 @@ const WinnerModal: React.FC<WinnerModalProps> = ({ confirmedWinner, quit }) => {
             <Typography.Title level={3} className="aligned-title">
               Victories
             </Typography.Title>
-            <CountUp start={0} end={1} className="counter-text" />
+            <AnimatedCounter
+              start={victories - 1}
+              end={victories}
+              duration={0.5}
+              delay={1.6}
+              itemWrapper={CounterItem}
+            />
           </Space>
         </Space>
         <Space>
@@ -43,12 +59,11 @@ const WinnerModal: React.FC<WinnerModalProps> = ({ confirmedWinner, quit }) => {
             <Typography.Title level={3} className="aligned-title">
               Score
             </Typography.Title>
-            <CountUp
-              start={1000}
-              end={1200}
-              delay={2.5}
-              duration={3.5}
-              className="counter-text"
+            <AnimatedCounter
+              start={Math.round(previousScore)}
+              end={Math.round(score)}
+              delay={2}
+              itemWrapper={CounterItem}
             />
           </Space>
         </Space>
