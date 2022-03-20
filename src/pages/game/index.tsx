@@ -30,7 +30,7 @@ const GamePage: React.FC = () => {
   const [playerOneName, playerTwoName] = contestantNames || [];
 
   useEffect(() => {
-    if (contestantNames !== undefined) {
+    if (contestantNames !== undefined && team !== undefined) {
       const playerOne = team.players.find(
         (player) => player.name === playerOneName
       );
@@ -42,7 +42,7 @@ const GamePage: React.FC = () => {
         setContestant([playerOne, playerTwo]);
       }
     }
-  }, [contestantNames, playerOneName, playerTwoName, team.players]);
+  }, [contestantNames, playerOneName, playerTwoName, team]);
 
   const handleWinnerSelection = (winner: Player, contestant: Contestant) => {
     const [playerOne, playerTwo] = contestant;
@@ -57,38 +57,41 @@ const GamePage: React.FC = () => {
     setConfirmedWinner(winner);
   };
 
-  return (
-    <>
-      <PageHeader
-        title={team.name}
-        subTitle={contestant ? "Select a winner" : ""}
-      />
-      {!contestant ? (
-        <ContestantSelector
-          team={team}
-          setContestantNames={setContestantNames}
+  if (team) {
+    return (
+      <>
+        <PageHeader
+          title={team.name}
+          subTitle={contestant ? "Select a winner" : ""}
         />
-      ) : (
-        <WinnerSelection
-          contestant={contestant}
-          handleWinnerSelection={handleWinnerSelection}
-        />
-      )}
-      {confirmedWinner !== undefined && (
-        <WinnerModal
-          confirmedWinner={confirmedWinner}
-          quit={() => setConfirmedWinner(undefined)}
-          previousScore={
-            confirmedWinner ? previousScores[confirmedWinner.name] : 0
-          }
-          score={confirmedWinner ? scores[confirmedWinner.name] || 0 : 0}
-          victories={
-            confirmedWinner ? getVictories(matches, confirmedWinner.name) : 0
-          }
-        />
-      )}
-    </>
-  );
+        {!contestant ? (
+          <ContestantSelector
+            team={team}
+            setContestantNames={setContestantNames}
+          />
+        ) : (
+          <WinnerSelection
+            contestant={contestant}
+            handleWinnerSelection={handleWinnerSelection}
+          />
+        )}
+        {confirmedWinner !== undefined && (
+          <WinnerModal
+            confirmedWinner={confirmedWinner}
+            quit={() => setConfirmedWinner(undefined)}
+            previousScore={
+              confirmedWinner ? previousScores[confirmedWinner.name] : 0
+            }
+            score={confirmedWinner ? scores[confirmedWinner.name] || 0 : 0}
+            victories={
+              confirmedWinner ? getVictories(matches, confirmedWinner.name) : 0
+            }
+          />
+        )}
+      </>
+    );
+  }
+  return <div />;
 };
 
 export default GamePage;

@@ -1,165 +1,171 @@
-import React from "react";
-import { Avatar, Button, Form, Input, List, Space } from "antd";
-import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
-import { useForm } from "antd/lib/form/Form";
-
-import { useAppDispatch } from "../../../../app/hooks";
-import { create } from "../../teamSlice";
-import { Player, Team } from "../../types";
-import { initiate } from "../../../score/scoreSlice";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { Avatar, Button, Form, List, Space } from "antd";
+import { generateAvatarUrl } from "features/team/avatar";
+import { teamEditorSchema } from "features/team/schemas";
+import usePlayerNames from "features/team/usePlayerNames";
+import { Field, FieldArray, Formik, FormikProps } from "formik";
+import * as R from "ramda";
+import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { debounce } from "utils";
+import { useAppDispatch } from "../../../../app/hooks";
+import { initiate } from "../../../score/scoreSlice";
+import { create } from "../../teamSlice";
+import { Player, Team, TeamForm } from "../../types";
 
 interface TeamEditorFormProps {
-  team: Team;
+  team?: Team;
 }
+
+const F: React.FC<FormikProps<TeamForm>> = ({
+  values,
+  setFieldValue,
+  errors,
+  isValid,
+  isSubmitting,
+  submitForm,
+}) => {
+  const pickRandomName = usePlayerNames();
+  const previousRef = useRef<Player[]>(values.players);
+
+  const teamNameError = errors.name;
+
+  useEffect(() => {
+    const updatePlayerAvatar = () => {
+      if (values.players.length === previousRef.current.length) {
+        const diffPlayerIndex = values.players.reduce((acc, player, index) => {
+          const previousName = (previousRef.current as Player[])[index].name;
+          if (previousName !== player.name) {
+            return index;
+          }
+          return acc;
+        }, -1);
+        if (diffPlayerIndex > -1) {
+          setFieldValue(
+            `players.${diffPlayerIndex}.avatar`,
+            generateAvatarUrl(values.players[diffPlayerIndex].name)
+          );
+        }
+      }
+      previousRef.current = values.players;
+    };
+    debounce(updatePlayerAvatar, 500)();
+  }, [values.players]);
+
+  return (
+    <Form layout="vertical" onFinish={submitForm}>
+      <Form.Item
+        label="Team name"
+        required
+        validateStatus={teamNameError !== undefined ? "error" : "success"}
+        help={teamNameError}
+      >
+        <Field type="input" name="name" />
+      </Form.Item>
+      <Form.Item label="Players" required>
+        <FieldArray name="players">
+          {(arrayHelper) => {
+            return (
+              <Space direction="vertical">
+                <List
+                  dataSource={values.players.map((player, index) => ({
+                    ...player,
+                    key: index,
+                  }))}
+                  renderItem={(item) => {
+                    const error: string | undefined = R.path(
+                      [item.key, "name"],
+                      errors.players
+                    );
+                    return (
+                      <Form.Item
+                        key={item.key}
+                        validateStatus={
+                          error !== undefined ? "error" : "success"
+                        }
+                        help={error}
+                      >
+                        <Space key={item.key}>
+                          <Field name={`players.${item.key}.name`} />
+                          <Avatar src={item.avatar} />
+                          <Button
+                            icon={<DeleteOutlined />}
+                            onClick={() => arrayHelper.remove(item.key)}
+                            style={{
+                              visibility:
+                                values.players.length > 2
+                                  ? "visible"
+                                  : "hidden",
+                            }}
+                          />
+                        </Space>
+                      </Form.Item>
+                    );
+                  }}
+                />
+                <Button
+                  icon={<PlusOutlined />}
+                  onClick={() => {
+                    const name = pickRandomName();
+                    arrayHelper.push({
+                      name,
+                      avatar: generateAvatarUrl(name),
+                    });
+                  }}
+                >
+                  Add a player
+                </Button>
+              </Space>
+            );
+          }}
+        </FieldArray>
+      </Form.Item>
+
+      <Button
+        type="primary"
+        htmlType="submit"
+        disabled={!isValid || isSubmitting}
+      >
+        Save
+      </Button>
+    </Form>
+  );
+};
+
+const defaultValues: Team = {
+  name: "Team name",
+  players: [
+    {
+      name: "Player 1",
+      avatar: generateAvatarUrl("Player 1"),
+    },
+    {
+      name: "Player 2",
+      avatar: generateAvatarUrl("Player 2"),
+    },
+  ],
+};
 
 const TeamEditorForm: React.FC<TeamEditorFormProps> = ({ team }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const onFinish = (team: Team) => {
+  const onFinish = (team: TeamForm) => {
     dispatch(create(team));
     dispatch(initiate(team.players));
     navigate("/game");
   };
 
-  // TODO v2: add an error message or something
-  const onFinishFailed = (errorInfo: any) => {
-    console.log({ errorInfo });
-  };
-
-  const [form] = useForm();
-
+  const initialValues = team === undefined ? defaultValues : team;
   return (
     <Space direction="vertical">
-      <Form
-        name="team"
-        form={form}
-        layout="vertical"
-        initialValues={{ name: team.name, players: team.players }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
+      <Formik<TeamForm>
+        initialValues={initialValues}
+        validationSchema={teamEditorSchema}
+        onSubmit={onFinish}
       >
-        <Form.Item
-          label="Team name"
-          name="name"
-          rules={[{ required: true, message: "Your team needs a name" }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Players"
-          name="players"
-          rules={[{ required: true, message: "" }]}
-        >
-          <Form.List
-            name="players"
-            // TODO: add unique constraint to player names
-            rules={[
-              {
-                validator: async (_, value) => {
-                  if (value.length < 2) {
-                    return Promise.reject(
-                      "Your team needs at least two players"
-                    );
-                  }
-                  return Promise.resolve();
-                },
-              },
-            ]}
-          >
-            {(fields, { add, remove }, { errors }) => {
-              return (
-                <Space direction="vertical">
-                  <List
-                    dataSource={fields}
-                    renderItem={(item) => {
-                      const player = form.getFieldValue("players")[item.name];
-                      return (
-                        <Input.Group compact key={item.key}>
-                          <Form.Item name={[item.name, "name"]}>
-                            <Input />
-                          </Form.Item>
-                          <Form.Item
-                            name={[item.name, "avatar"]}
-                            dependencies={[["players", item.name, "name"]]}
-                            rules={[
-                              // Hack, this is not an actual validation, just a way to
-                              // automaticaly update the avatar field on name change
-                              ({ getFieldValue, setFieldsValue }) => ({
-                                validator() {
-                                  const nameValue = getFieldValue([
-                                    "players",
-                                    item.name,
-                                    "name",
-                                  ]);
-                                  const players: Player[] =
-                                    getFieldValue("players");
-                                  const newPlayers = players.map(
-                                    (player, index) => {
-                                      if (index !== item.name) {
-                                        return player;
-                                      }
-                                      return {
-                                        ...player,
-                                        avatar: `https://avatars.dicebear.com/api/avataaars/${nameValue}.svg`,
-                                      };
-                                    }
-                                  );
-                                  setFieldsValue({
-                                    players: newPlayers,
-                                  });
-                                  return Promise.resolve();
-                                },
-                              }),
-                            ]}
-                          >
-                            <Avatar src={player.avatar} shape="circle" />
-                          </Form.Item>
-                          {fields.length > 2 && (
-                            <Button
-                              onClick={() => remove(item.name)}
-                              icon={<MinusCircleOutlined />}
-                            />
-                          )}
-                        </Input.Group>
-                      );
-                    }}
-                  />
-                  <Form.ErrorList errors={errors} />
-                  <Button
-                    onClick={() =>
-                      add({
-                        name: `Player ${fields.length + 1}`,
-                        avatar: `https://avatars.dicebear.com/api/avataaars/Player ${
-                          fields.length + 1
-                        }.svg`,
-                      })
-                    }
-                  >
-                    <PlusOutlined /> Add player
-                  </Button>
-                </Space>
-              );
-            }}
-          </Form.List>
-        </Form.Item>
-
-        <Form.Item shouldUpdate>
-          {() => (
-            <Button
-              type="primary"
-              htmlType="submit"
-              disabled={form
-                .getFieldsError()
-                .some(({ errors }) => errors.length)}
-            >
-              Save
-            </Button>
-          )}
-        </Form.Item>
-      </Form>
+        {(props) => <F {...props} />}
+      </Formik>
     </Space>
   );
 };

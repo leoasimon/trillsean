@@ -6,7 +6,6 @@ export interface Player {
 export interface Team {
   name: string;
   players: Player[];
-  draft: boolean;
 }
 
 export interface TeamForm {

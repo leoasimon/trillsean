@@ -8,8 +8,7 @@ import { selectTeam } from "../../features/team/teamSlice";
 const TeamEditorPage: React.FC = () => {
   const team = useAppSelector(selectTeam);
 
-  const title =
-    team && team.draft === false ? " Update your team" : "Create your team";
+  const title = team === undefined ? " Create your team" : "Update your team";
   return (
     <>
       <PageHeader title={title} />

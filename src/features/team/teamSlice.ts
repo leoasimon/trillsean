@@ -1,21 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
+import { generateAvatarUrl } from "./avatar";
 import { Team, TeamForm } from "./types";
 
-const initialState: Team = {
-  name: "Team name",
-  players: [
-    {
-      name: "Player 1",
-      avatar: "https://avatars.dicebear.com/api/avataaars/Player 1.svg",
-    },
-    {
-      name: "Player 2",
-      avatar: "https://avatars.dicebear.com/api/avataaars/Player 2.svg",
-    },
-  ],
-  draft: true,
+interface TeamState {
+  status: "idle" | "loading" | "error";
+  value?: Team;
+}
+
+const initialState: TeamState = {
+  status: "idle",
 };
 
 export const teamSlice = createSlice({
@@ -23,15 +18,14 @@ export const teamSlice = createSlice({
   initialState,
   reducers: {
     create: (state, action: PayloadAction<TeamForm>) => {
-      state.draft = false;
-      state.name = action.payload.name;
-      state.players = action.payload.players;
+      state.status = "idle";
+      state.value = action.payload;
     },
   },
 });
 
 export const { create } = teamSlice.actions;
 
-export const selectTeam = (state: RootState) => state.team;
+export const selectTeam = (state: RootState) => state.team.value;
 
 export default teamSlice.reducer;

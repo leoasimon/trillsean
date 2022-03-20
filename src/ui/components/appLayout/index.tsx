@@ -8,8 +8,9 @@ import { Link } from "react-router-dom";
 
 const AppLayout: React.FC = ({ children }) => {
   const team = useAppSelector(selectTeam);
+
   return (
-    <>
+    <div className="app-layout">
       <header className="app-header">
         <Space
           direction="horizontal"
@@ -17,7 +18,7 @@ const AppLayout: React.FC = ({ children }) => {
         app-header-content"
         >
           <h1>Trillsean</h1>
-          {team && team.draft === false && (
+          {team !== undefined && (
             <Menu mode="horizontal" key="menu">
               <Menu.Item key="team">
                 <Link to="/team">My team</Link>
@@ -32,8 +33,8 @@ const AppLayout: React.FC = ({ children }) => {
           )}
         </Space>
       </header>
-      {children}
-    </>
+      <div className="app-content">{children}</div>
+    </div>
   );
 };
 
