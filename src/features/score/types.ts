@@ -3,4 +3,8 @@ export interface Score {
   score: number;
 }
 
+export interface Scores {
+  [playerName: string]: number;
+}
+
 export type UpdatedScores = [number, number];

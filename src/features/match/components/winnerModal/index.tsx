@@ -29,6 +29,7 @@ const WinnerModal: React.FC<WinnerModalProps> = ({
       visible={confirmedWinner !== undefined}
       onCancel={quit}
       footer={null}
+      destroyOnClose
     >
       <Space
         direction="vertical"

@@ -1,13 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import * as R from "ramda";
 import { AppDispatch, RootState } from "../../app/store";
 import { MatchResult } from "../match/types";
 import { Player } from "../team/types";
 import { eloRating } from "./eloRating";
-import { UpdatedScores } from "./types";
-
-export interface Scores {
-  [playerName: string]: number;
-}
+import { Scores, UpdatedScores } from "./types";
 
 const initialState: Scores = {};
 
@@ -54,7 +51,18 @@ const scoreSlice = createSlice({
   },
 });
 
-export const selectScores = (state: RootState) => state.score;
+const selectAllScores = (state: RootState) => state.score;
+
+export const selectActivePlayersScores = (state: RootState) => {
+  const { team, score } = state;
+  const activePlayerNames = R.map(R.prop("name"))(team.value?.players || []);
+  return R.pick(activePlayerNames, score);
+};
+
+export const selectScores = (state: RootState) => ({
+  all: selectAllScores(state),
+  active: selectActivePlayersScores(state),
+});
 
 export const { initiate } = scoreSlice.actions;
 

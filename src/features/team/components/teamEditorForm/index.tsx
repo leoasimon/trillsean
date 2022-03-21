@@ -38,10 +38,12 @@ const F: React.FC<FormikProps<TeamForm>> = ({
   isSubmitting,
   submitForm,
   isInitialValid,
+  touched,
 }) => {
   const previousRef = useRef<Player[]>(values.players);
 
   const teamNameError = errors.name;
+  const teamNameTouched = touched.name;
 
   useEffect(() => {
     const updatePlayerAvatar = () => {
@@ -68,7 +70,9 @@ const F: React.FC<FormikProps<TeamForm>> = ({
   return (
     <Form layout="vertical" onFinish={submitForm}>
       <Form.Item
-        validateStatus={teamNameError !== undefined ? "error" : "success"}
+        validateStatus={
+          teamNameError !== undefined && teamNameTouched ? "error" : "success"
+        }
         help={teamNameError}
       >
         <Field type="input" name="name" placeholder="Team name" autoFocus />
@@ -88,6 +92,9 @@ const F: React.FC<FormikProps<TeamForm>> = ({
                       [item.key, "name"],
                       errors.players
                     );
+                    const nameTouched = R.path([item.key, "name"])(
+                      touched.players
+                    );
                     return (
                       <List.Item
                         key={item.key}
@@ -106,8 +113,10 @@ const F: React.FC<FormikProps<TeamForm>> = ({
                         ]}
                       >
                         <Form.Item
-                          validateStatus={error ? "error" : "success"}
-                          help={error}
+                          validateStatus={
+                            error && nameTouched ? "error" : "success"
+                          }
+                          help={nameTouched ? error : ""}
                           style={{ marginBottom: 0 }}
                         >
                           <Field

@@ -6,7 +6,10 @@ import WinnerModal from "../../features/match/components/winnerModal";
 import WinnerSelection from "../../features/match/components/winnerSelection";
 import { add, selectMatches } from "../../features/match/matchSlice";
 import { Match, MatchResult } from "../../features/match/types";
-import { selectScores, updateScores } from "../../features/score/scoreSlice";
+import {
+  selectActivePlayersScores,
+  updateScores,
+} from "../../features/score/scoreSlice";
 import ContestantSelector from "../../features/team/components/contestantSelector";
 import { selectTeam } from "../../features/team/teamSlice";
 import { Contestant, ContestantNames, Player } from "../../features/team/types";
@@ -19,7 +22,7 @@ const getVictories = (matches: Match[], playerName: string) => {
 
 const GamePage: React.FC = () => {
   const team = useAppSelector(selectTeam);
-  const scores = useAppSelector(selectScores);
+  const scores = useAppSelector(selectActivePlayersScores);
   const matches = useAppSelector(selectMatches);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -84,19 +87,17 @@ const GamePage: React.FC = () => {
             handleWinnerSelection={handleWinnerSelection}
           />
         )}
-        {confirmedWinner !== undefined && (
-          <WinnerModal
-            confirmedWinner={confirmedWinner}
-            quit={() => setConfirmedWinner(undefined)}
-            previousScore={
-              confirmedWinner ? previousScores[confirmedWinner.name] : 0
-            }
-            score={confirmedWinner ? scores[confirmedWinner.name] || 0 : 0}
-            victories={
-              confirmedWinner ? getVictories(matches, confirmedWinner.name) : 0
-            }
-          />
-        )}
+        <WinnerModal
+          confirmedWinner={confirmedWinner}
+          quit={() => setConfirmedWinner(undefined)}
+          previousScore={
+            confirmedWinner ? previousScores[confirmedWinner.name] : 0
+          }
+          score={confirmedWinner ? scores[confirmedWinner.name] || 0 : 0}
+          victories={
+            confirmedWinner ? getVictories(matches, confirmedWinner.name) : 0
+          }
+        />
       </>
     );
   }
