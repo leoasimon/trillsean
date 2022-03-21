@@ -1,4 +1,5 @@
 import { PageHeader } from "antd";
+import { Player } from "features/players/types";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -12,7 +13,7 @@ import {
 } from "../../features/score/scoreSlice";
 import ContestantSelector from "../../features/team/components/contestantSelector";
 import { selectTeam } from "../../features/team/teamSlice";
-import { Contestant, ContestantNames, Player } from "../../features/team/types";
+import { Contestant, ContestantNames } from "../../features/team/types";
 
 const getVictories = (matches: Match[], playerName: string) => {
   return matches.reduce((acc, match) => {

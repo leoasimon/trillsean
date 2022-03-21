@@ -1,7 +1,4 @@
-export interface Player {
-  name: string;
-  avatar: string;
-}
+import { Player } from "features/players/types";
 
 export interface Team {
   name: string;

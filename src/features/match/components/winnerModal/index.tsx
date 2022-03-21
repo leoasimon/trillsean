@@ -1,6 +1,6 @@
 import { Button, Modal, Space, Typography } from "antd";
 import { ReactComponent as Awards } from "assets/awards.svg";
-import { Player } from "features/team/types";
+import { Player } from "features/players/types";
 import React from "react";
 import { Link } from "react-router-dom";
 import AnimatedCounter from "ui/components/animatedCounter";

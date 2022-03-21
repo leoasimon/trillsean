@@ -1,6 +1,6 @@
 // TODO: move Player type to Player features folder
 import { Avatar, Button, List } from "antd";
-import { Player } from "features/team/types";
+import { Player } from "features/players/types";
 import React from "react";
 
 interface PlayerSelectionListProps {

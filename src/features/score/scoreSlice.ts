@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Player } from "features/players/types";
 import * as R from "ramda";
 import { AppDispatch, RootState } from "../../app/store";
 import { MatchResult } from "../match/types";
-import { Player } from "../team/types";
 import { eloRating } from "./eloRating";
 import { Scores, UpdatedScores } from "./types";
 

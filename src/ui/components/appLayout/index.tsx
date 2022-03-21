@@ -1,5 +1,5 @@
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { Popover, Space } from "antd";
+import { Button, Popover, Space } from "antd";
 import React, { useState } from "react";
 import { useAppSelector } from "../../../app/hooks";
 import { selectTeam } from "../../../features/team/teamSlice";
@@ -38,7 +38,9 @@ const AppLayout: React.FC = ({ children }) => {
           )}
         </Space>
       </header>
-      <div className="app-content">{children}</div>
+      <div className="app-content">
+        <Space direction="vertical">{children}</Space>
+      </div>
     </div>
   );
 };

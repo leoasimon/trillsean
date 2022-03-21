@@ -1,6 +1,7 @@
 import { Card, Modal, Space, Typography } from "antd";
+import { Player } from "features/players/types";
 import React, { useState } from "react";
-import { Contestant, Player } from "../../../team/types";
+import { Contestant } from "../../../team/types";
 
 interface WinnerSelectionProps {
   contestant: Contestant;

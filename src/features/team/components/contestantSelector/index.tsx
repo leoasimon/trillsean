@@ -1,7 +1,8 @@
 import { Button, Card, Modal, Space, Typography } from "antd";
 import PlayerSelectionList from "features/players/components/playerSelectionList";
+import { Player } from "features/players/types";
 import React, { ReactNode, useMemo, useState } from "react";
-import { ContestantNames, Player, Team } from "../../types";
+import { ContestantNames, Team } from "../../types";
 
 const SelectContestantButton: React.FC<{
   contestantIndex: number;
