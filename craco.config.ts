@@ -10,8 +10,6 @@ export default () => {
             lessOptions: {
               math: { "parens-division": true },
               modifyVars: {
-                "@body-background": "#f5f7f9",
-
                 "@primary-color": "#F2B90C",
                 "@layout-header-background": "@primary-color",
                 "@font-size-base": "18px",

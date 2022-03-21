@@ -1,14 +1,23 @@
-import React from "react";
-import { Menu, Space } from "antd";
-
-import "./appLayout.less";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import { Popover, Space } from "antd";
+import React, { useState } from "react";
 import { useAppSelector } from "../../../app/hooks";
 import { selectTeam } from "../../../features/team/teamSlice";
-import { Link } from "react-router-dom";
+import AppMenu from "../appMenu";
+import "./appLayout.less";
 
 const AppLayout: React.FC = ({ children }) => {
   const team = useAppSelector(selectTeam);
 
+  const [displayMenu, setDisplayMenu] = useState(false);
+
+  const closeMenu = () => setDisplayMenu(false);
+
+  const menuIcon = displayMenu ? (
+    <MenuUnfoldOutlined style={{ color: "white", fontSize: "24px" }} />
+  ) : (
+    <MenuFoldOutlined style={{ color: "white", fontSize: "24px" }} />
+  );
   return (
     <div className="app-layout">
       <header className="app-header">
@@ -18,17 +27,14 @@ const AppLayout: React.FC = ({ children }) => {
         >
           <h1>Trillsean</h1>
           {team !== undefined && (
-            <Menu mode="horizontal" key="menu" style={{ borderRadius: "6px" }}>
-              <Menu.Item key="team">
-                <Link to="/team">My team</Link>
-              </Menu.Item>
-              <Menu.Item key="game">
-                <Link to="/game">Play</Link>
-              </Menu.Item>
-              <Menu.Item key="scoreBoard">
-                <Link to="/score-board">Score board</Link>
-              </Menu.Item>
-            </Menu>
+            <Popover
+              content={<AppMenu onItemSelection={closeMenu} />}
+              trigger="click"
+              placement="bottomRight"
+              onVisibleChange={setDisplayMenu}
+            >
+              {menuIcon}
+            </Popover>
           )}
         </Space>
       </header>
