@@ -1,5 +1,14 @@
-import { Avatar, Button, Input, List, Modal, Space, Typography } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  Avatar,
+  Button,
+  ConfigProvider,
+  Input,
+  List,
+  Modal,
+  Space,
+  Typography,
+} from "antd";
 import PlayerEditorForm from "features/players/components/playerEditorForm";
 import { playerEditorSchema } from "features/players/schemas";
 import { Player, PlayerFormValues } from "features/players/types";
@@ -61,40 +70,57 @@ const TeamEditorForm: React.FC<TeamEditorFormProps> = ({ team }) => {
         placeholder="Team name"
         onChange={debounce(handleTeamNameChange)}
       />
-      <List
-        header={<Typography.Title level={5}>Players</Typography.Title>}
-        dataSource={team.players}
-        footer={[
-          <Button
-            icon={<PlusOutlined />}
-            block
-            onClick={() => handleUpdatePlayer()}
-          >
-            Add a player
-          </Button>,
-        ]}
-        renderItem={(item) => {
-          return (
-            <List.Item
-              actions={[
-                <Button
-                  icon={<EditOutlined />}
-                  onClick={() => handleUpdatePlayer(item)}
-                />,
-                <Button
-                  icon={<DeleteOutlined />}
-                  onClick={() => handleDeletePlayer(item.id)}
-                />,
-              ]}
-            >
-              <List.Item.Meta
-                avatar={<Avatar src={item.avatar} />}
-                title={<span>{item.name}</span>}
-              />
-            </List.Item>
-          );
-        }}
-      />
+      <ConfigProvider
+        renderEmpty={() => (
+          <Button onClick={() => handleUpdatePlayer()}>
+            Create Your first Player
+          </Button>
+        )}
+      >
+        <List
+          header={<Typography.Title level={5}>Players</Typography.Title>}
+          dataSource={team.players}
+          footer={
+            team.players.length > 0
+              ? [
+                  <Button
+                    key="addPlayer"
+                    icon={<PlusOutlined />}
+                    block
+                    onClick={() => handleUpdatePlayer()}
+                  >
+                    Add a player
+                  </Button>,
+                ]
+              : []
+          }
+          renderItem={(item) => {
+            return (
+              <List.Item
+                key={item.id}
+                actions={[
+                  <Button
+                    key="updatePlayer"
+                    icon={<EditOutlined />}
+                    onClick={() => handleUpdatePlayer(item)}
+                  />,
+                  <Button
+                    key="deletePlayer"
+                    icon={<DeleteOutlined />}
+                    onClick={() => handleDeletePlayer(item.id)}
+                  />,
+                ]}
+              >
+                <List.Item.Meta
+                  avatar={<Avatar src={item.avatar} />}
+                  title={<span>{item.name}</span>}
+                />
+              </List.Item>
+            );
+          }}
+        />
+      </ConfigProvider>
+
       {isModalVisible && (
         <Formik
           initialValues={playerToUpdate || initialValues}

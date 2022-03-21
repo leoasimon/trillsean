@@ -1,24 +1,23 @@
 import { Card, Modal, Space, Typography } from "antd";
-import { Player } from "features/players/types";
+import { Contestants, Player } from "features/players/types";
 import React, { useState } from "react";
-import { Contestant } from "../../../team/types";
 
 interface WinnerSelectionProps {
-  contestant: Contestant;
-  handleWinnerSelection: (winner: Player, contestants: Contestant) => void;
+  contestants: Contestants;
+  handleWinnerSelection: (winner: Player, contestants: Contestants) => void;
 }
 
 const WinnerSelection: React.FC<WinnerSelectionProps> = ({
-  contestant,
+  contestants,
   handleWinnerSelection,
 }) => {
   const [winner, setWinner] = useState<Player>();
 
-  const [playerOne, playerTwo] = contestant;
+  const [playerOne, playerTwo] = contestants;
 
   const handleOk = () => {
     if (winner) {
-      handleWinnerSelection(winner, contestant);
+      handleWinnerSelection(winner, contestants);
       setWinner(undefined);
     }
   };

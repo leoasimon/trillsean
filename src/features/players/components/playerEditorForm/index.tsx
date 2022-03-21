@@ -1,8 +1,8 @@
 import { Space, Typography } from "antd";
-import { Player, PlayerFormValues } from "features/players/types";
+import { Player } from "features/players/types";
 import { ErrorMessage, Field } from "formik";
 import * as R from "ramda";
-import React, { useState } from "react";
+import React from "react";
 
 interface PlayerEditorFormProps {
   player?: Player;

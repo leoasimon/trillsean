@@ -9,7 +9,3 @@ export interface TeamForm {
   name: string;
   players: Player[];
 }
-
-export type Contestant = [Player, Player];
-
-export type ContestantNames = [string, string];

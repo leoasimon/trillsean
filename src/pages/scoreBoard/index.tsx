@@ -1,4 +1,5 @@
 import { Button, PageHeader } from "antd";
+import { selectTeam } from "features/team/teamSlice";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
@@ -8,6 +9,7 @@ import { selectScores } from "../../features/score/scoreSlice";
 
 const ScoreBoardPage: React.FC = () => {
   const matches = useAppSelector(selectMatches);
+  const team = useAppSelector(selectTeam);
   const { all, active } = useAppSelector(selectScores);
   const [showArchived, setShowArchived] = useState(false);
   const navigate = useNavigate();
@@ -23,7 +25,7 @@ const ScoreBoardPage: React.FC = () => {
           ? "Hide players no longer on the team"
           : "Show all player scores"}
       </Button>
-      <ScoreBoard matches={matches} scores={scores} />
+      <ScoreBoard matches={matches} scores={scores} players={team.players} />
     </>
   );
 };

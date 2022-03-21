@@ -10,7 +10,7 @@ export const matchSlice = createSlice({
   reducers: {
     add: (state, action: PayloadAction<MatchResult>) => {
       state.push({
-        contestant: action.payload.contestant,
+        contestantIds: action.payload.contestantIds,
         winner: action.payload.winner,
         date: Date.now(),
       });

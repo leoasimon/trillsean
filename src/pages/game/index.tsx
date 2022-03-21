@@ -1,5 +1,5 @@
 import { PageHeader } from "antd";
-import { Player } from "features/players/types";
+import { ContestantIds, Contestants, Player } from "features/players/types";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -13,7 +13,6 @@ import {
 } from "../../features/score/scoreSlice";
 import ContestantSelector from "../../features/team/components/contestantSelector";
 import { selectTeam } from "../../features/team/teamSlice";
-import { Contestant, ContestantNames } from "../../features/team/types";
 
 const getVictories = (matches: Match[], playerName: string) => {
   return matches.reduce((acc, match) => {
@@ -28,63 +27,60 @@ const GamePage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [contestantNames, setContestantNames] = useState<ContestantNames>();
-  const [contestant, setContestant] = useState<Contestant>();
+  const [contestantIds, setContestantIds] = useState<ContestantIds>();
+  const [contestants, setContestants] = useState<Contestants>();
   const [confirmedWinner, setConfirmedWinner] = useState<Player>();
   const [previousScores, setPreviousScores] = useState(scores);
 
-  const [playerOneName, playerTwoName] = contestantNames || [];
+  const [playerOneId, playerTwoId] = contestantIds || [];
 
   useEffect(() => {
-    if (contestantNames !== undefined && team !== undefined) {
+    if (contestantIds !== undefined) {
       const playerOne = team.players.find(
-        (player) => player.name === playerOneName
+        (player) => player.id === playerOneId
       );
       const playerTwo = team.players.find(
-        (player) => player.name === playerTwoName
+        (player) => player.id === playerTwoId
       );
 
       if (playerOne && playerTwo) {
-        setContestant([playerOne, playerTwo]);
+        setContestants([playerOne, playerTwo]);
       }
     }
-  }, [contestantNames, playerOneName, playerTwoName, team]);
+  }, [contestantIds, playerOneId, playerTwoId, team]);
 
-  const handleWinnerSelection = (winner: Player, contestant: Contestant) => {
-    const [playerOne, playerTwo] = contestant;
+  const handleWinnerSelection = (winner: Player, contestants: Contestants) => {
+    const [playerOne, playerTwo] = contestants;
     const matchResult: MatchResult = {
-      contestant: [playerOne.name, playerTwo.name],
-      winner: winner.name,
+      contestantIds: [playerOne.id, playerTwo.id],
+      winner: winner.id,
     };
     setPreviousScores(scores);
     dispatch(add(matchResult));
     dispatch(updateScores(matchResult));
-    setContestant(undefined);
+    setContestants(undefined);
     setConfirmedWinner(winner);
   };
 
   const onBack = () => {
-    if (!contestant) {
+    if (!contestants) {
       navigate("/team");
     } else {
-      setContestant(undefined);
+      setContestants(undefined);
     }
   };
 
   if (team) {
     const title =
-      contestant === undefined ? "Select contestants" : "Select a winner";
+      contestants === undefined ? "Select contestants" : "Select a winner";
     return (
       <>
         <PageHeader title={title} onBack={onBack} />
-        {!contestant ? (
-          <ContestantSelector
-            team={team}
-            setContestantNames={setContestantNames}
-          />
+        {!contestants ? (
+          <ContestantSelector team={team} setContestantIds={setContestantIds} />
         ) : (
           <WinnerSelection
-            contestant={contestant}
+            contestants={contestants}
             handleWinnerSelection={handleWinnerSelection}
           />
         )}
@@ -92,11 +88,11 @@ const GamePage: React.FC = () => {
           confirmedWinner={confirmedWinner}
           quit={() => setConfirmedWinner(undefined)}
           previousScore={
-            confirmedWinner ? previousScores[confirmedWinner.name] : 0
+            confirmedWinner ? previousScores[confirmedWinner.id] : 0
           }
-          score={confirmedWinner ? scores[confirmedWinner.name] || 0 : 0}
+          score={confirmedWinner ? scores[confirmedWinner.id] || 0 : 0}
           victories={
-            confirmedWinner ? getVictories(matches, confirmedWinner.name) : 0
+            confirmedWinner ? getVictories(matches, confirmedWinner.id) : 0
           }
         />
       </>

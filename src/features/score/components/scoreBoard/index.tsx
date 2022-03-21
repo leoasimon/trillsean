@@ -1,4 +1,5 @@
 import { Table } from "antd";
+import { Player } from "features/players/types";
 import { Scores } from "features/score/types";
 import * as R from "ramda";
 import React from "react";
@@ -8,6 +9,7 @@ import { getPlayerStats } from "../../playerStats";
 interface ScoreBoardProps {
   scores: Scores;
   matches: Match[];
+  players: Player[];
 }
 
 const bySecondItem = R.descend((tuple: [a: any, b: any]) => tuple[1]);
@@ -15,12 +17,18 @@ const sortBySecondItem = R.sort(bySecondItem);
 
 // TODO v2: add player name input filter
 // TODO v2: add sort buttons on score / wins / defeats
-const ScoreBoard: React.FC<ScoreBoardProps> = ({ matches, scores }) => {
+const ScoreBoard: React.FC<ScoreBoardProps> = ({
+  matches,
+  scores,
+  players,
+}) => {
   const playerStats = getPlayerStats(matches);
   const pairedScores = R.toPairs(scores);
   const sortedPairedScores = sortBySecondItem(pairedScores);
 
-  const dataSource = sortedPairedScores.map(([playerName, score]) => {
+  const dataSource = sortedPairedScores.map(([playerId, score]) => {
+    const player = players.find((player) => player.id === playerId);
+    const playerName = player?.name || "";
     return {
       key: playerName,
       playerName: playerName,

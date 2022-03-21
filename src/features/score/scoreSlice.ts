@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Player } from "features/players/types";
 import * as R from "ramda";
-import { AppDispatch, RootState } from "../../app/store";
+import { RootState } from "../../app/store";
 import { MatchResult } from "../match/types";
 import { eloRating } from "./eloRating";
 import { Scores, UpdatedScores } from "./types";
@@ -12,16 +11,15 @@ export const updateScores = createAsyncThunk<
   UpdatedScores,
   MatchResult,
   {
-    dispatch: AppDispatch;
     state: RootState;
   }
 >("score/update", (matchResult, thunkAPI) => {
   const state = thunkAPI.getState();
-  const { contestant, winner } = matchResult;
-  const winnerIndex = contestant.indexOf(winner);
-  const [playerOneName, playerTwoName] = contestant;
-  const ra = state.score[playerOneName];
-  const rb = state.score[playerTwoName];
+  const { contestantIds, winner } = matchResult;
+  const winnerIndex = contestantIds.indexOf(winner);
+  const [playerOneId, playerTwoId] = contestantIds;
+  const ra = state.score[playerOneId];
+  const rb = state.score[playerTwoId];
 
   // TODO: undestand why k = 30
   // https://www.geeksforgeeks.org/elo-rating-algorithm/
@@ -33,20 +31,18 @@ const scoreSlice = createSlice({
   name: "score",
   initialState,
   reducers: {
-    initiate: (state, action: PayloadAction<Player[]>) => {
-      action.payload.forEach((player) => {
-        state[player.name] = 1000;
-      });
+    initiatePlayerScore: (state, action: PayloadAction<string>) => {
+      state[action.payload] = 1000;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(updateScores.fulfilled, (state, action) => {
-      const { contestant } = action.meta.arg;
-      const [playerOneName, playerTwoName] = contestant;
+      const { contestantIds } = action.meta.arg;
+      const [playerOneId, playerTwoId] = contestantIds;
       const [playerOneUpdatedScore, playerTwoUpdatedScore] = action.payload;
 
-      state[playerOneName] = playerOneUpdatedScore;
-      state[playerTwoName] = playerTwoUpdatedScore;
+      state[playerOneId] = playerOneUpdatedScore;
+      state[playerTwoId] = playerTwoUpdatedScore;
     });
   },
 });
@@ -55,7 +51,7 @@ const selectAllScores = (state: RootState) => state.score;
 
 export const selectActivePlayersScores = (state: RootState) => {
   const { team, score } = state;
-  const activePlayerNames = R.map(R.prop("name"))(team.value?.players || []);
+  const activePlayerNames = R.map(R.prop("id"))(team.value?.players || []);
   return R.pick(activePlayerNames, score);
 };
 
@@ -64,6 +60,6 @@ export const selectScores = (state: RootState) => ({
   active: selectActivePlayersScores(state),
 });
 
-export const { initiate } = scoreSlice.actions;
+export const { initiatePlayerScore } = scoreSlice.actions;
 
 export default scoreSlice.reducer;

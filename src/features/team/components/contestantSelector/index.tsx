@@ -1,8 +1,8 @@
 import { Button, Card, Modal, Space, Typography } from "antd";
 import PlayerSelectionList from "features/players/components/playerSelectionList";
-import { Player } from "features/players/types";
+import { ContestantIds, Player } from "features/players/types";
 import React, { ReactNode, useMemo, useState } from "react";
-import { ContestantNames, Team } from "../../types";
+import { Team } from "../../types";
 
 const SelectContestantButton: React.FC<{
   contestantIndex: number;
@@ -41,12 +41,12 @@ const PlayerCard: React.FC<{ player: Player; actions?: ReactNode[] }> = ({
 
 interface ContestantSelectorProps {
   team: Team;
-  setContestantNames: (contestantNames: ContestantNames) => void;
+  setContestantIds: (contestantIds: ContestantIds) => void;
 }
 
 const ContestantSelector: React.FC<ContestantSelectorProps> = ({
   team,
-  setContestantNames,
+  setContestantIds,
 }) => {
   const [firstContestant, setFirstContestant] = useState<Player>();
   const [secondContestant, setSecondContestant] = useState<Player>();
@@ -66,7 +66,7 @@ const ContestantSelector: React.FC<ContestantSelectorProps> = ({
 
   const onFinish = () => {
     if (firstContestant !== undefined && secondContestant !== undefined) {
-      setContestantNames([firstContestant.name, secondContestant.name]);
+      setContestantIds([firstContestant.id, secondContestant.id]);
     }
   };
 

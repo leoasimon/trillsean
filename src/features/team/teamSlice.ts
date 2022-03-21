@@ -1,8 +1,8 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import createPlayer from "features/players/createPlayer";
-import { PlayerFormValues } from "features/players/types";
-import { filter } from "ramda";
-import { RootState } from "../../app/store";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import newPlayer from "features/players/createPlayer";
+import { Player, PlayerFormValues } from "features/players/types";
+import { initiatePlayerScore } from "features/score/scoreSlice";
+import { AppDispatch, RootState } from "../../app/store";
 import { Team } from "./types";
 
 interface TeamState {
@@ -18,14 +18,23 @@ const initialState: TeamState = {
   },
 };
 
+export const addPlayer = createAsyncThunk<
+  Player,
+  PlayerFormValues,
+  {
+    state: RootState;
+    dispatch: AppDispatch;
+  }
+>("team/createPlayer", (playerFormValues, thunkApi) => {
+  const player = newPlayer(playerFormValues);
+  thunkApi.dispatch(initiatePlayerScore(player.id));
+  return player;
+});
+
 export const teamSlice = createSlice({
   name: "team",
   initialState,
   reducers: {
-    addPlayer: (state, action: PayloadAction<PlayerFormValues>) => {
-      state.status = "idle";
-      state.value.players.push(createPlayer(action.payload));
-    },
     deletePlayer: (state, action: PayloadAction<string>) => {
       state.status = "idle";
       state.value.players = state.value.players.filter((player) => {
@@ -49,10 +58,14 @@ export const teamSlice = createSlice({
       state.value.name = action.payload;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(addPlayer.fulfilled, (state, action) => {
+      state.value.players.push(action.payload);
+    });
+  },
 });
 
-export const { addPlayer, deletePlayer, updatePlayer, updateName } =
-  teamSlice.actions;
+export const { deletePlayer, updatePlayer, updateName } = teamSlice.actions;
 
 export const selectTeam = (state: RootState) => state.team.value;
 

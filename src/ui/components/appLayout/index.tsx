@@ -1,5 +1,5 @@
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { Button, Popover, Space } from "antd";
+import { Popover, Space } from "antd";
 import React, { useState } from "react";
 import { useAppSelector } from "../../../app/hooks";
 import { selectTeam } from "../../../features/team/teamSlice";
@@ -26,7 +26,7 @@ const AppLayout: React.FC = ({ children }) => {
         app-header-content"
         >
           <h1>Trillsean</h1>
-          {team !== undefined && (
+          {team.players.length >= 2 && (
             <Popover
               content={<AppMenu onItemSelection={closeMenu} />}
               trigger="click"

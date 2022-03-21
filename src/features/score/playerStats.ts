@@ -1,7 +1,7 @@
 import { Match } from "../match/types";
 
 interface PlayerStats {
-  [playerName: string]: {
+  [playerId: string]: {
     wins: number;
     defeats: number;
   };
@@ -11,31 +11,31 @@ interface PlayerStats {
 export const getPlayerStats = (matches: Match[]): PlayerStats => {
   const playerStats: PlayerStats = {};
   matches.forEach((match) => {
-    const [playerOneName, playerTwoName] = match.contestant;
+    const [playerOneId, playerTwoId] = match.contestantIds;
 
-    const playerOneWin = playerOneName === match.winner;
+    const playerOneWin = playerOneId === match.winner;
 
-    if (playerOneName in playerStats) {
+    if (playerOneId in playerStats) {
       if (playerOneWin) {
-        playerStats[playerOneName].wins += 1;
+        playerStats[playerOneId].wins += 1;
       } else {
-        playerStats[playerOneName].defeats += 1;
+        playerStats[playerOneId].defeats += 1;
       }
     } else {
-      playerStats[playerOneName] = {
+      playerStats[playerOneId] = {
         wins: playerOneWin ? 1 : 0,
         defeats: playerOneWin ? 0 : 1,
       };
     }
 
-    if (playerTwoName in playerStats) {
+    if (playerTwoId in playerStats) {
       if (playerOneWin) {
-        playerStats[playerTwoName].defeats += 1;
+        playerStats[playerTwoId].defeats += 1;
       } else {
-        playerStats[playerTwoName].wins += 1;
+        playerStats[playerTwoId].wins += 1;
       }
     } else {
-      playerStats[playerTwoName] = {
+      playerStats[playerTwoId] = {
         wins: playerOneWin ? 0 : 1,
         defeats: playerOneWin ? 1 : 0,
       };

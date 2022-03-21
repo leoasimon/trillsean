@@ -7,3 +7,7 @@ export interface Player {
 export interface PlayerFormValues {
   name: string;
 }
+
+export type Contestants = [Player, Player];
+
+export type ContestantIds = [string, string];

@@ -1,14 +1,14 @@
-import { ContestantNames } from "../team/types";
+import { ContestantIds } from "features/players/types";
 
-type ContestantName = string;
+type ContestantId = string;
 
 export interface Match {
-  contestant: ContestantNames;
-  winner: ContestantName;
+  contestantIds: ContestantIds;
+  winner: ContestantId;
   date: number;
 }
 
 export interface MatchResult {
-  contestant: ContestantNames;
-  winner: ContestantName;
+  contestantIds: ContestantIds;
+  winner: ContestantId;
 }
