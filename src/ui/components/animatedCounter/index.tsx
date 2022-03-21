@@ -63,7 +63,7 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
   return (
     <div className="animated-counter" ref={counterRef}>
       <div className="counter-items" ref={counterItemsRef}>
-        {reversedCounterItems.map((item, index) => {
+        {reversedCounterItems.map((item) => {
           const props = { ref: counterItemRef };
           return (
             <div key={item} {...props}>

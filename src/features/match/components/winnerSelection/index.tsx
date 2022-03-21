@@ -1,8 +1,6 @@
-import { Card, Modal, Space } from "antd";
+import { Card, Modal, Space, Typography } from "antd";
 import React, { useState } from "react";
 import { Contestant, Player } from "../../../team/types";
-
-const { Meta } = Card;
 
 interface WinnerSelectionProps {
   contestant: Contestant;
@@ -30,22 +28,20 @@ const WinnerSelection: React.FC<WinnerSelectionProps> = ({
 
   return (
     <>
-      <Space direction="vertical">
+      <Space direction="vertical" style={{ textAlign: "center" }}>
         <Card
           hoverable
+          title={playerOne.name}
           cover={<img src={playerOne.avatar} alt={playerOne.name} />}
           onClick={() => setWinner(playerOne)}
-        >
-          <Meta title={playerOne.name} />
-        </Card>
-        VS
+        />
+        <Typography.Title level={4}>VS</Typography.Title>
         <Card
           hoverable
+          title={playerTwo.name}
           cover={<img src={playerTwo.avatar} alt={playerTwo.name} />}
           onClick={() => setWinner(playerTwo)}
-        >
-          <Meta title={playerTwo.name} />
-        </Card>
+        />
       </Space>
       <Modal
         title={`${winner?.name} won this match?`}

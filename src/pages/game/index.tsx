@@ -1,5 +1,6 @@
 import { PageHeader } from "antd";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import WinnerModal from "../../features/match/components/winnerModal";
 import WinnerSelection from "../../features/match/components/winnerSelection";
@@ -21,6 +22,7 @@ const GamePage: React.FC = () => {
   const scores = useAppSelector(selectScores);
   const matches = useAppSelector(selectMatches);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [contestantNames, setContestantNames] = useState<ContestantNames>();
   const [contestant, setContestant] = useState<Contestant>();
@@ -57,13 +59,20 @@ const GamePage: React.FC = () => {
     setConfirmedWinner(winner);
   };
 
+  const onBack = () => {
+    if (!contestant) {
+      navigate("/team");
+    } else {
+      setContestant(undefined);
+    }
+  };
+
   if (team) {
+    const title =
+      contestant === undefined ? "Select contestants" : "Select a winner";
     return (
       <>
-        <PageHeader
-          title={team.name}
-          subTitle={contestant ? "Select a winner" : ""}
-        />
+        <PageHeader title={title} onBack={onBack} />
         {!contestant ? (
           <ContestantSelector
             team={team}

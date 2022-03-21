@@ -1,8 +1,7 @@
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { Avatar, Button, Form, List, Space } from "antd";
+import { Button, Form, List, Space } from "antd";
 import { generateAvatarUrl } from "features/team/avatar";
 import { teamEditorSchema } from "features/team/schemas";
-import usePlayerNames from "features/team/usePlayerNames";
 import { Field, FieldArray, Formik, FormikProps } from "formik";
 import * as R from "ramda";
 import React, { useEffect, useRef } from "react";
@@ -17,6 +16,20 @@ interface TeamEditorFormProps {
   team?: Team;
 }
 
+const defaultValues: Team = {
+  name: "",
+  players: [
+    {
+      name: "",
+      avatar: generateAvatarUrl(""),
+    },
+    {
+      name: "",
+      avatar: generateAvatarUrl(""),
+    },
+  ],
+};
+
 const F: React.FC<FormikProps<TeamForm>> = ({
   values,
   setFieldValue,
@@ -24,8 +37,8 @@ const F: React.FC<FormikProps<TeamForm>> = ({
   isValid,
   isSubmitting,
   submitForm,
+  isInitialValid,
 }) => {
-  const pickRandomName = usePlayerNames();
   const previousRef = useRef<Player[]>(values.players);
 
   const teamNameError = errors.name;
@@ -50,17 +63,15 @@ const F: React.FC<FormikProps<TeamForm>> = ({
       previousRef.current = values.players;
     };
     debounce(updatePlayerAvatar, 500)();
-  }, [values.players]);
+  }, [values.players, setFieldValue]);
 
   return (
     <Form layout="vertical" onFinish={submitForm}>
       <Form.Item
-        label="Team name"
-        required
         validateStatus={teamNameError !== undefined ? "error" : "success"}
         help={teamNameError}
       >
-        <Field type="input" name="name" />
+        <Field type="input" name="name" placeholder="Team name" autoFocus />
       </Form.Item>
       <Form.Item label="Players" required>
         <FieldArray name="players">
@@ -78,17 +89,11 @@ const F: React.FC<FormikProps<TeamForm>> = ({
                       errors.players
                     );
                     return (
-                      <Form.Item
+                      <List.Item
                         key={item.key}
-                        validateStatus={
-                          error !== undefined ? "error" : "success"
-                        }
-                        help={error}
-                      >
-                        <Space key={item.key}>
-                          <Field name={`players.${item.key}.name`} />
-                          <Avatar src={item.avatar} />
+                        actions={[
                           <Button
+                            type="text"
                             icon={<DeleteOutlined />}
                             onClick={() => arrayHelper.remove(item.key)}
                             style={{
@@ -97,53 +102,57 @@ const F: React.FC<FormikProps<TeamForm>> = ({
                                   ? "visible"
                                   : "hidden",
                             }}
+                          />,
+                        ]}
+                      >
+                        <Form.Item
+                          validateStatus={error ? "error" : "success"}
+                          help={error}
+                          style={{ marginBottom: 0 }}
+                        >
+                          <Field
+                            name={`players.${item.key}.name`}
+                            placeholder={`Player ${item.key + 1}`}
                           />
-                        </Space>
-                      </Form.Item>
+                        </Form.Item>
+                      </List.Item>
                     );
                   }}
+                  footer={[
+                    <Button
+                      icon={<PlusOutlined />}
+                      block
+                      size="large"
+                      // shape="circle"
+                      onClick={() => {
+                        arrayHelper.push({
+                          name: "",
+                          avatar: generateAvatarUrl(""),
+                        });
+                      }}
+                    >
+                      Add a player
+                    </Button>,
+                  ]}
                 />
-                <Button
-                  icon={<PlusOutlined />}
-                  onClick={() => {
-                    const name = pickRandomName();
-                    arrayHelper.push({
-                      name,
-                      avatar: generateAvatarUrl(name),
-                    });
-                  }}
-                >
-                  Add a player
-                </Button>
               </Space>
             );
           }}
         </FieldArray>
       </Form.Item>
 
-      <Button
-        type="primary"
-        htmlType="submit"
-        disabled={!isValid || isSubmitting}
-      >
-        Save
-      </Button>
+      <div className="form-footer">
+        <Button
+          type="primary"
+          htmlType="submit"
+          size="large"
+          disabled={(!isValid && !isInitialValid) || isSubmitting}
+        >
+          Save
+        </Button>
+      </div>
     </Form>
   );
-};
-
-const defaultValues: Team = {
-  name: "Team name",
-  players: [
-    {
-      name: "Player 1",
-      avatar: generateAvatarUrl("Player 1"),
-    },
-    {
-      name: "Player 2",
-      avatar: generateAvatarUrl("Player 2"),
-    },
-  ],
 };
 
 const TeamEditorForm: React.FC<TeamEditorFormProps> = ({ team }) => {

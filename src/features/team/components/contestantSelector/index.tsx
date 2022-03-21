@@ -1,135 +1,146 @@
-import React, { useState } from "react";
-import { Avatar, Button, Form, Select, Space } from "antd";
-import { useForm } from "antd/lib/form/Form";
+import { Button, Card, Modal, Space, Typography } from "antd";
+import PlayerSelectionList from "features/players/components/playerSelectionList";
+import React, { ReactNode, useMemo, useState } from "react";
+import { ContestantNames, Player, Team } from "../../types";
 
-import { ContestantNames, Team } from "../../types";
+const SelectContestantButton: React.FC<{
+  contestantIndex: number;
+  selectContestant: (index: number) => void;
+}> = ({ contestantIndex, selectContestant }) => {
+  return (
+    <Button onClick={() => selectContestant(contestantIndex)}>
+      {`Player ${contestantIndex}`}
+    </Button>
+  );
+};
+
+const ChangeContestantButton: React.FC<{
+  contestantIndex: number;
+  selectContestant: (index: number) => void;
+}> = ({ contestantIndex, selectContestant }) => {
+  return (
+    <Button type="text" onClick={() => selectContestant(contestantIndex)}>
+      {`Change`}
+    </Button>
+  );
+};
+
+const PlayerCard: React.FC<{ player: Player; actions?: ReactNode[] }> = ({
+  player,
+  actions = [],
+}) => {
+  return (
+    <Card
+      title={player.name}
+      cover={<img src={player.avatar} alt={player.name} />}
+      actions={actions}
+    />
+  );
+};
 
 interface ContestantSelectorProps {
   team: Team;
   setContestantNames: (contestantNames: ContestantNames) => void;
 }
 
-const { Option } = Select;
-
 const ContestantSelector: React.FC<ContestantSelectorProps> = ({
   team,
   setContestantNames,
 }) => {
-  const [form] = useForm();
-  const [playerOneOptions, setPlayerOneOptions] = useState(team.players);
-  const [playerTwoOptions, setPlayerTwoOptions] = useState(team.players);
+  const [firstContestant, setFirstContestant] = useState<Player>();
+  const [secondContestant, setSecondContestant] = useState<Player>();
+  const [selecting, setSelecting] = useState<number>();
 
-  const onFinish = (contestantForm: {
-    playerOne: string;
-    playerTwo: string;
-  }) => {
-    const { playerOne, playerTwo } = contestantForm;
-    setContestantNames([playerOne, playerTwo]);
-  };
-  const onValuesChange = (changedValues: any) => {
-    if ("playerOne" in changedValues) {
-      setPlayerTwoOptions(
-        !changedValues.playerOne
-          ? team.players
-          : team.players.filter(
-              (player) => player.name !== changedValues.playerOne
-            )
-      );
-    }
-    if ("playerTwo" in changedValues) {
-      setPlayerOneOptions(
-        !changedValues.playerTwo
-          ? team.players
-          : team.players.filter(
-              (player) => player.name !== changedValues.playerTwo
-            )
-      );
+  const secondPlayerOptions = useMemo(() => {
+    return team.players.filter(
+      (player) => player.name !== firstContestant?.name
+    );
+  }, [firstContestant, team.players]);
+
+  const firstPlayerOptions = useMemo(() => {
+    return team.players.filter(
+      (player) => player.name !== secondContestant?.name
+    );
+  }, [secondContestant, team.players]);
+
+  const onFinish = () => {
+    if (firstContestant !== undefined && secondContestant !== undefined) {
+      setContestantNames([firstContestant.name, secondContestant.name]);
     }
   };
+
+  const handleCancel = () => setSelecting(undefined);
+
+  const handleSelect = (player: Player) => {
+    const setContestant =
+      selecting === 1 ? setFirstContestant : setSecondContestant;
+    setSelecting(undefined);
+    setContestant(player);
+  };
+
+  const options = selecting === 1 ? firstPlayerOptions : secondPlayerOptions;
 
   return (
-    <Space direction="vertical">
-      <Form
-        name="contestantSelection"
-        layout="vertical"
-        initialValues={{ playerOne: null, playerTwo: null }}
-        form={form}
-        onFinish={onFinish}
-        onValuesChange={onValuesChange}
-      >
-        <Form.Item
-          label="Player 1"
-          name="playerOne"
-          rules={[{ required: true }]}
-        >
-          <Select
-            showSearch
-            placeholder="Player 1"
-            allowClear
-            filterOption={(input, option) => {
-              return (
-                `${option?.value}`
-                  .toLowerCase()
-                  .indexOf(input.toLocaleLowerCase()) >= 0
-              );
-            }}
-          >
-            {playerOneOptions.map((player) => (
-              <Option key={player.name} value={player.name}>
-                {player.name}
-                <Avatar src={player.avatar} />
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-        VS
-        <Form.Item
-          label="Player 2"
-          name="playerTwo"
-          rules={[{ required: true }]}
-        >
-          <Select
-            showSearch
-            placeholder="Player 2"
-            allowClear
-            filterOption={(input, option) => {
-              return (
-                `${option?.value}`
-                  .toLowerCase()
-                  .indexOf(input.toLocaleLowerCase()) >= 0
-              );
-            }}
-          >
-            {playerTwoOptions.map((player) => (
-              <Option key={player.name} value={player.name}>
-                {player.name}
-                <Avatar src={player.avatar} />
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item shouldUpdate>
-          {() => {
-            const allTouched = form.isFieldsTouched(
-              ["playerOne", "playerTwo"],
-              true
-            );
-            const hasErrors = form
-              .getFieldsError()
-              .some(({ errors }) => errors.length);
+    <Space direction="vertical" style={{ textAlign: "center" }}>
+      {firstContestant === undefined ? (
+        <SelectContestantButton
+          contestantIndex={1}
+          selectContestant={setSelecting}
+        />
+      ) : (
+        <PlayerCard
+          player={firstContestant}
+          actions={[
+            <ChangeContestantButton
+              contestantIndex={1}
+              selectContestant={setSelecting}
+            />,
+            <Button type="text" onClick={() => setFirstContestant(undefined)}>
+              Delete
+            </Button>,
+          ]}
+        />
+      )}
+      <Typography.Title level={4}>VS</Typography.Title>
+      {secondContestant === undefined ? (
+        <SelectContestantButton
+          contestantIndex={2}
+          selectContestant={setSelecting}
+        />
+      ) : (
+        <PlayerCard
+          player={secondContestant}
+          actions={[
+            <ChangeContestantButton
+              contestantIndex={2}
+              selectContestant={setSelecting}
+            />,
 
-            return (
-              <Button
-                type="primary"
-                htmlType="submit"
-                disabled={!allTouched || hasErrors}
-              >
-                Play
-              </Button>
-            );
-          }}
-        </Form.Item>
-      </Form>
+            <Button type="text" onClick={() => setSecondContestant(undefined)}>
+              Delete
+            </Button>,
+          ]}
+        />
+      )}
+      <Button
+        block
+        type="primary"
+        size="large"
+        disabled={
+          firstContestant === undefined || secondContestant === undefined
+        }
+        onClick={onFinish}
+      >
+        Play
+      </Button>
+      <Modal
+        visible={selecting !== undefined}
+        onCancel={handleCancel}
+        footer={null}
+        destroyOnClose
+      >
+        <PlayerSelectionList players={options} selectPlayer={handleSelect} />
+      </Modal>
     </Space>
   );
 };

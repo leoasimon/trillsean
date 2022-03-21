@@ -5,7 +5,7 @@ import AppLayout from "./ui/components/appLayout";
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <AppLayout>
         <AppRouter />
       </AppLayout>

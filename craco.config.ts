@@ -10,8 +10,16 @@ export default () => {
             lessOptions: {
               math: { "parens-division": true },
               modifyVars: {
-                "@layout-header-background": "#FF9A54",
-                "@primary-color": "#376AFB",
+                "@body-background": "#f5f7f9",
+
+                "@primary-color": "#F2B90C",
+                "@layout-header-background": "@primary-color",
+                "@font-size-base": "18px",
+                "@padding-sm": "16px",
+
+                "@height-base": "40px",
+                "@height-lg": "56px",
+                "@height-sm": "32px",
               },
               javascriptEnabled: true,
             },

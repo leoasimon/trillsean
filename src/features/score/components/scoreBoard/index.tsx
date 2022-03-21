@@ -18,7 +18,7 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({ matches, scores }) => {
     return {
       key: playerName,
       playerName: playerName,
-      score: scores[playerName],
+      score: Math.round(scores[playerName]),
       wins: playerName in playerStats ? playerStats[playerName].wins : 0,
       defeats: playerName in playerStats ? playerStats[playerName].defeats : 0,
     };

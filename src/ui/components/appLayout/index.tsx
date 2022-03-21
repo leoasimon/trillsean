@@ -13,13 +13,12 @@ const AppLayout: React.FC = ({ children }) => {
     <div className="app-layout">
       <header className="app-header">
         <Space
-          direction="horizontal"
           className="
         app-header-content"
         >
           <h1>Trillsean</h1>
           {team !== undefined && (
-            <Menu mode="horizontal" key="menu">
+            <Menu mode="horizontal" key="menu" style={{ borderRadius: "6px" }}>
               <Menu.Item key="team">
                 <Link to="/team">My team</Link>
               </Menu.Item>
