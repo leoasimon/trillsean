@@ -51,7 +51,7 @@ const scoreSlice = createSlice({
 const selectAllScores = (state: RootState) => state.score;
 
 export const selectActivePlayersScores = (state: RootState) => {
-  const { team, score } = state;
+  const { score } = state;
   const activePlayers = selectActivePlayers(state);
   const activePlayerids = R.map(R.prop("id"))(activePlayers);
   return R.pick(activePlayerids, score);

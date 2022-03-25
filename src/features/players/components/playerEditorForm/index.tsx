@@ -29,7 +29,7 @@ const PlayerEditorForm: React.FC<PlayerEditorFormProps> = ({
         }}
       >
         {({ field }: FieldProps<string>) => {
-          return <Input {...field} />;
+          return <Input {...field} placeholder="Player name" />;
         }}
       </Field>
       <ErrorMessage name="name" />

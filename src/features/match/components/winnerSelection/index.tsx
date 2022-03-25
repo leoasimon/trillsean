@@ -28,7 +28,10 @@ const WinnerSelection: React.FC<WinnerSelectionProps> = ({
 
   return (
     <>
-      <Space direction="vertical" style={{ textAlign: "center" }}>
+      <Space
+        direction="vertical"
+        style={{ textAlign: "center", width: "100%" }}
+      >
         <Card
           hoverable
           title={playerOne.name}
