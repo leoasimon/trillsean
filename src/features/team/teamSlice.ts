@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import newPlayer from "features/players/createPlayer";
 import { Player, PlayerFormValues } from "features/players/types";
 import { initiatePlayerScore } from "features/score/scoreSlice";
+import * as R from "ramda";
 import { AppDispatch, RootState } from "../../app/store";
 import { Team } from "./types";
 
@@ -37,8 +38,11 @@ export const teamSlice = createSlice({
   reducers: {
     deletePlayer: (state, action: PayloadAction<string>) => {
       state.status = "idle";
-      state.value.players = state.value.players.filter((player) => {
-        return player.id !== action.payload;
+      state.value.players = state.value.players.map((player) => {
+        if (player.id === action.payload) {
+          return { ...player, active: false };
+        }
+        return player;
       });
     },
     updatePlayer: (
@@ -67,6 +71,12 @@ export const teamSlice = createSlice({
 
 export const { deletePlayer, updatePlayer, updateName } = teamSlice.actions;
 
-export const selectTeam = (state: RootState) => state.team.value;
+export const selectTeam = (state: RootState) => ({
+  ...state.team.value,
+  players: state.team.value.players.filter(R.prop("active")),
+});
+export const selectActivePlayers = (state: RootState) =>
+  state.team.value.players.filter(R.prop("active"));
+export const selectAllPlayers = (state: RootState) => state.team.value.players;
 
 export default teamSlice.reducer;

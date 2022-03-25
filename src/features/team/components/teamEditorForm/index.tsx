@@ -1,8 +1,14 @@
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import {
   Avatar,
   Button,
   ConfigProvider,
+  Empty,
   Input,
   List,
   Modal,
@@ -64,6 +70,7 @@ const TeamEditorForm: React.FC<TeamEditorFormProps> = ({ team }) => {
 
   return (
     <Space direction="vertical">
+      <Typography.Title level={5}>Team name</Typography.Title>
       <Input
         type="text"
         defaultValue={team?.name}
@@ -72,9 +79,24 @@ const TeamEditorForm: React.FC<TeamEditorFormProps> = ({ team }) => {
       />
       <ConfigProvider
         renderEmpty={() => (
-          <Button onClick={() => handleUpdatePlayer()}>
-            Create Your first Player
-          </Button>
+          <Empty
+            image={<UserOutlined style={{ fontSize: "72px" }} />}
+            description={
+              <Space direction="vertical">
+                <Typography.Paragraph>
+                  You don't have any players on your team yet
+                </Typography.Paragraph>
+                <Button
+                  key="addPlayer"
+                  icon={<PlusOutlined />}
+                  block
+                  onClick={() => handleUpdatePlayer()}
+                >
+                  Create Your first Player
+                </Button>
+              </Space>
+            }
+          />
         )}
       >
         <List

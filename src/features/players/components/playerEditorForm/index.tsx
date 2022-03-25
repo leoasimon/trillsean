@@ -1,6 +1,6 @@
-import { Space, Typography } from "antd";
+import { Input, Space, Typography } from "antd";
 import { Player } from "features/players/types";
-import { ErrorMessage, Field } from "formik";
+import { ErrorMessage, Field, FieldProps } from "formik";
 import * as R from "ramda";
 import React from "react";
 
@@ -27,7 +27,11 @@ const PlayerEditorForm: React.FC<PlayerEditorFormProps> = ({
             return `${foundName} is already taken`;
           }
         }}
-      />
+      >
+        {({ field }: FieldProps<string>) => {
+          return <Input {...field} />;
+        }}
+      </Field>
       <ErrorMessage name="name" />
     </Space>
   );

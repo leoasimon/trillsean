@@ -10,6 +10,7 @@ const newPlayer = (playerFormValues: PlayerFormValues): Player => {
     id,
     name,
     avatar,
+    active: true,
   };
 };
 

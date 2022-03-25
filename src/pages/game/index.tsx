@@ -1,4 +1,4 @@
-import { PageHeader } from "antd";
+import { Divider, PageHeader } from "antd";
 import { ContestantIds, Contestants, Player } from "features/players/types";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +12,7 @@ import {
   updateScores,
 } from "../../features/score/scoreSlice";
 import ContestantSelector from "../../features/team/components/contestantSelector";
-import { selectTeam } from "../../features/team/teamSlice";
+import { selectActivePlayers } from "../../features/team/teamSlice";
 
 const getVictories = (matches: Match[], playerName: string) => {
   return matches.reduce((acc, match) => {
@@ -21,7 +21,7 @@ const getVictories = (matches: Match[], playerName: string) => {
 };
 
 const GamePage: React.FC = () => {
-  const team = useAppSelector(selectTeam);
+  const players = useAppSelector(selectActivePlayers);
   const scores = useAppSelector(selectActivePlayersScores);
   const matches = useAppSelector(selectMatches);
   const dispatch = useAppDispatch();
@@ -36,18 +36,14 @@ const GamePage: React.FC = () => {
 
   useEffect(() => {
     if (contestantIds !== undefined) {
-      const playerOne = team.players.find(
-        (player) => player.id === playerOneId
-      );
-      const playerTwo = team.players.find(
-        (player) => player.id === playerTwoId
-      );
+      const playerOne = players.find((player) => player.id === playerOneId);
+      const playerTwo = players.find((player) => player.id === playerTwoId);
 
       if (playerOne && playerTwo) {
         setContestants([playerOne, playerTwo]);
       }
     }
-  }, [contestantIds, playerOneId, playerTwoId, team]);
+  }, [contestantIds, playerOneId, playerTwoId, players]);
 
   const handleWinnerSelection = (winner: Player, contestants: Contestants) => {
     const [playerOne, playerTwo] = contestants;
@@ -70,35 +66,34 @@ const GamePage: React.FC = () => {
     }
   };
 
-  if (team) {
-    const title =
-      contestants === undefined ? "Select contestants" : "Select a winner";
-    return (
-      <>
-        <PageHeader title={title} onBack={onBack} />
-        {!contestants ? (
-          <ContestantSelector team={team} setContestantIds={setContestantIds} />
-        ) : (
-          <WinnerSelection
-            contestants={contestants}
-            handleWinnerSelection={handleWinnerSelection}
-          />
-        )}
-        <WinnerModal
-          confirmedWinner={confirmedWinner}
-          quit={() => setConfirmedWinner(undefined)}
-          previousScore={
-            confirmedWinner ? previousScores[confirmedWinner.id] : 0
-          }
-          score={confirmedWinner ? scores[confirmedWinner.id] || 0 : 0}
-          victories={
-            confirmedWinner ? getVictories(matches, confirmedWinner.id) : 0
-          }
+  const title =
+    contestants === undefined ? "Select contestants" : "Select a winner";
+  return (
+    <>
+      <PageHeader title={title} onBack={onBack} />
+      <Divider />
+      {!contestants ? (
+        <ContestantSelector
+          players={players}
+          setContestantIds={setContestantIds}
         />
-      </>
-    );
-  }
-  return <div />;
+      ) : (
+        <WinnerSelection
+          contestants={contestants}
+          handleWinnerSelection={handleWinnerSelection}
+        />
+      )}
+      <WinnerModal
+        confirmedWinner={confirmedWinner}
+        quit={() => setConfirmedWinner(undefined)}
+        previousScore={confirmedWinner ? previousScores[confirmedWinner.id] : 0}
+        score={confirmedWinner ? scores[confirmedWinner.id] || 0 : 0}
+        victories={
+          confirmedWinner ? getVictories(matches, confirmedWinner.id) : 0
+        }
+      />
+    </>
+  );
 };
 
 export default GamePage;

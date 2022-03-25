@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { selectActivePlayers } from "features/team/teamSlice";
 import * as R from "ramda";
 import { RootState } from "../../app/store";
 import { MatchResult } from "../match/types";
@@ -51,8 +52,9 @@ const selectAllScores = (state: RootState) => state.score;
 
 export const selectActivePlayersScores = (state: RootState) => {
   const { team, score } = state;
-  const activePlayerNames = R.map(R.prop("id"))(team.value?.players || []);
-  return R.pick(activePlayerNames, score);
+  const activePlayers = selectActivePlayers(state);
+  const activePlayerids = R.map(R.prop("id"))(activePlayers);
+  return R.pick(activePlayerids, score);
 };
 
 export const selectScores = (state: RootState) => ({

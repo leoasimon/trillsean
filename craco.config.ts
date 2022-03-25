@@ -12,7 +12,7 @@ export default () => {
               modifyVars: {
                 "@primary-color": "#F2B90C",
                 "@layout-header-background": "@primary-color",
-                "@font-size-base": "18px",
+                "@font-size-base": "16px",
                 "@padding-sm": "16px",
 
                 "@height-base": "40px",

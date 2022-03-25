@@ -2,17 +2,17 @@ import React from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 
 import { useAppSelector } from "./app/hooks";
-import { selectTeam } from "./features/team/teamSlice";
+import { selectActivePlayers } from "./features/team/teamSlice";
 import GamePage from "./pages/game";
 import ScoreBoardPage from "./pages/scoreBoard";
 import TeamEditorPage from "./pages/teamEditor";
 
 const RequireAuth: React.FC = ({ children }) => {
-  const team = useAppSelector(selectTeam);
+  const players = useAppSelector(selectActivePlayers);
 
   const location = useLocation();
 
-  if (team.players.length < 2) {
+  if (players.length < 2) {
     // Redirect them to the / page, but save the current location they were
     // trying to go to when they were redirected. This allows us to send them
     // along to that page after they login, which is a nicer user experience

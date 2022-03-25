@@ -2,14 +2,13 @@ import { Button, Card, Modal, Space, Typography } from "antd";
 import PlayerSelectionList from "features/players/components/playerSelectionList";
 import { ContestantIds, Player } from "features/players/types";
 import React, { ReactNode, useMemo, useState } from "react";
-import { Team } from "../../types";
 
 const SelectContestantButton: React.FC<{
   contestantIndex: number;
   selectContestant: (index: number) => void;
 }> = ({ contestantIndex, selectContestant }) => {
   return (
-    <Button onClick={() => selectContestant(contestantIndex)}>
+    <Button block onClick={() => selectContestant(contestantIndex)}>
       {`Player ${contestantIndex}`}
     </Button>
   );
@@ -40,12 +39,12 @@ const PlayerCard: React.FC<{ player: Player; actions?: ReactNode[] }> = ({
 };
 
 interface ContestantSelectorProps {
-  team: Team;
+  players: Player[];
   setContestantIds: (contestantIds: ContestantIds) => void;
 }
 
 const ContestantSelector: React.FC<ContestantSelectorProps> = ({
-  team,
+  players,
   setContestantIds,
 }) => {
   const [firstContestant, setFirstContestant] = useState<Player>();
@@ -53,16 +52,12 @@ const ContestantSelector: React.FC<ContestantSelectorProps> = ({
   const [selecting, setSelecting] = useState<number>();
 
   const secondPlayerOptions = useMemo(() => {
-    return team.players.filter(
-      (player) => player.name !== firstContestant?.name
-    );
-  }, [firstContestant, team.players]);
+    return players.filter((player) => player.name !== firstContestant?.name);
+  }, [firstContestant, players]);
 
   const firstPlayerOptions = useMemo(() => {
-    return team.players.filter(
-      (player) => player.name !== secondContestant?.name
-    );
-  }, [secondContestant, team.players]);
+    return players.filter((player) => player.name !== secondContestant?.name);
+  }, [secondContestant, players]);
 
   const onFinish = () => {
     if (firstContestant !== undefined && secondContestant !== undefined) {
@@ -82,7 +77,7 @@ const ContestantSelector: React.FC<ContestantSelectorProps> = ({
   const options = selecting === 1 ? firstPlayerOptions : secondPlayerOptions;
 
   return (
-    <Space direction="vertical" style={{ textAlign: "center" }}>
+    <Space direction="vertical" style={{ textAlign: "center", width: "100%" }}>
       {firstContestant === undefined ? (
         <SelectContestantButton
           contestantIndex={1}
