@@ -38,7 +38,7 @@ const WinnerModal: React.FC<WinnerModalProps> = ({
         style={{ display: "flex", justifyContent: "center" }}
       >
         <Typography.Title className="winner-title">
-          Congratulation!
+          Congratulations!
         </Typography.Title>
         <Awards width={300} className="award-illustration" />
         <Space>
