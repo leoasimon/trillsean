@@ -39,8 +39,6 @@ const AppLayout: React.FC = ({ children }) => {
     <MenuFoldOutlined style={{ color: "white", fontSize: "24px" }} />
   );
 
-  console.log(window.location.pathname);
-
   const goToGame = () => navigate("/game");
   return (
     <div className="app-layout">

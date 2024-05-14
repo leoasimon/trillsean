@@ -1,17 +1,11 @@
-type Sprite =
-  | "male"
-  | "female"
-  | "human"
-  | "identicon"
-  | "initials"
-  | "bottts"
-  | "avataaars"
-  | "jdenticon"
-  | "gridy"
-  | "micah";
+import { createAvatar } from "@dicebear/core";
+import { lorelei } from "@dicebear/collection";
 
-const baseUrl = "https://avatars.dicebear.com/api";
-const sprites: Sprite = "gridy";
+export const generateAvatarUrl = (name: string) => {
+  const avatar = createAvatar(lorelei, {
+    seed: name,
+  });
 
-export const generateAvatarUrl = (seed: string) =>
-  `${baseUrl}/${sprites}/${seed}.svg`;
+  console.log({ avatar, str: avatar.toString() });
+  return avatar;
+};

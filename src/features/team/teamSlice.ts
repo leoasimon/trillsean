@@ -26,8 +26,8 @@ export const addPlayer = createAsyncThunk<
     state: RootState;
     dispatch: AppDispatch;
   }
->("team/createPlayer", (playerFormValues, thunkApi) => {
-  const player = newPlayer(playerFormValues);
+>("team/createPlayer", async (playerFormValues, thunkApi) => {
+  const player = await newPlayer(playerFormValues);
   thunkApi.dispatch(initiatePlayerScore(player.id));
   return player;
 });
