@@ -7,6 +7,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 100vh;
 }
 
 .app-header {
@@ -34,6 +35,7 @@
 }
 
 .app-content {
+  flex: 1;
   max-width: 860px;
   display: flex;
   flex-direction: column;
@@ -50,4 +52,48 @@
 
 .start-gane-button {
   transform: translateY(-50%);
+}
+
+footer {
+  background-color: @primary-color;
+  color: white;
+  padding: 12px 0;
+  width: 100%;
+}
+
+footer .contact-section {
+  display: flex;
+  align-items: center;
+}
+
+footer .contact-decoration {
+  flex: 1;
+  height: 2px;
+  background-color: white;
+}
+
+footer .contact-content {
+  display: flex;
+  padding: 0 10px;
+}
+
+footer .contact-section a {
+  color: white;
+  padding: 0 4px;
+}
+
+footer .copyright-section {
+  margin-top: 12px;
+}
+
+footer .copyright-section h3 {
+  color: white;
+  text-align: center;
+}
+
+footer .copyright-section span {
+  color: white;
+  text-align: center;
+  display: block;
+  font-size: small;
 }

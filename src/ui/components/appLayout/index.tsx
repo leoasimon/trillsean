@@ -79,6 +79,34 @@ const AppLayout: React.FC = ({ children }) => {
           </Button>
         </Tooltip>
       )}
+      <footer>
+        <div className="contact-section">
+          <div className="contact-decoration" />
+          <div className="contact-content">
+            <a
+              href="https://github.com/leoasimon/trillsean"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Github
+              {/* <img src={githubLogo} alt="GitHub logo" className="w-8" /> */}
+            </a>
+            <a
+              href="https://www.linkedin.com/in/lyg-sim/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Linkedin
+              {/* <img src={linkedinLogo} alt="GitHub logo" className="w-8" /> */}
+            </a>
+          </div>
+          <div className="contact-decoration" />
+        </div>
+        <div className="copyright-section">
+          <h3>Trillsean</h3>
+          <span>Copyright © 2024 Léo Simon</span>
+        </div>
+      </footer>
     </div>
   );
 };
